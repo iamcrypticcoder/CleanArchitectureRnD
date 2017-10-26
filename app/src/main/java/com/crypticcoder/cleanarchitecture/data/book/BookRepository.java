@@ -3,8 +3,11 @@ package com.crypticcoder.cleanarchitecture.data.book;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.crypticcoder.cleanarchitecture.data.CreateListener;
 import com.crypticcoder.cleanarchitecture.data.DataListListener;
 import com.crypticcoder.cleanarchitecture.data.DataListener;
+import com.crypticcoder.cleanarchitecture.data.DeleteListener;
+import com.crypticcoder.cleanarchitecture.data.UpdateListener;
 import com.crypticcoder.cleanarchitecture.domain.model.Book;
 
 /**
@@ -80,12 +83,56 @@ public class BookRepository {
 
     }
 
+    void createBook(@NonNull Book book, @NonNull final CreateListener<Book> createListener) {
+        mRemoteDataSource.createBook(book, new CreateListener<Book>() {
+            @Override
+            public void onSuccess(Book entity) {
+                mLocalDataSource.createBook(entity);
+                createListener.onSuccess(entity);
+            }
+
+            @Override
+            public void onFailed(String failureMessage) {
+                createListener.onFailed(failureMessage);
+            }
+        });
+    }
 
     void updateBook(@NonNull Book book) {
 
     }
 
+    void updateBook(@NonNull Book book, @NonNull final UpdateListener<Book> updateListener) {
+        mRemoteDataSource.updateBook(book, new UpdateListener<Book>() {
+            @Override
+            public void onSuccess(Book entity) {
+                mLocalDataSource.updateBook(entity);
+                updateListener.onSuccess(entity);
+            }
+
+            @Override
+            public void onFailed(String failureMessage) {
+                updateListener.onFailed(failureMessage);
+            }
+        });
+    }
+
     void deleteBook(@NonNull Long bookId) {
 
+    }
+
+    void deleteBook(@NonNull final Long bookId, @NonNull final DeleteListener deleteListener) {
+        mRemoteDataSource.deleteBook(bookId, new DeleteListener() {
+            @Override
+            public void onSuccess() {
+                mLocalDataSource.deleteBook(bookId);
+                deleteListener.onSuccess();
+            }
+
+            @Override
+            public void onFailed(String failureMessage) {
+                deleteListener.onFailed(failureMessage);
+            }
+        });
     }
 }
