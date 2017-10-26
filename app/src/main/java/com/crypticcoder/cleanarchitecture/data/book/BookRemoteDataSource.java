@@ -2,6 +2,7 @@ package com.crypticcoder.cleanarchitecture.data.book;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 
 import com.crypticcoder.cleanarchitecture.data.CreateListener;
@@ -9,6 +10,8 @@ import com.crypticcoder.cleanarchitecture.data.DataListListener;
 import com.crypticcoder.cleanarchitecture.data.DataListener;
 import com.crypticcoder.cleanarchitecture.data.DeleteListener;
 import com.crypticcoder.cleanarchitecture.data.UpdateListener;
+import com.crypticcoder.cleanarchitecture.data.mappers.JSONObjectMapper;
+import com.crypticcoder.cleanarchitecture.data.mappers.impl.JSONObjectBookMapper;
 import com.crypticcoder.cleanarchitecture.domain.model.Book;
 
 import org.json.JSONObject;
@@ -25,9 +28,11 @@ public class BookRemoteDataSource implements BookDataSource {
 
     private Context mContext;
 
+    private JSONObjectMapper<JSONObject, Book> mBookMapper;
 
     private BookRemoteDataSource(@NonNull Context context) {
         mContext = context;
+        mBookMapper = new JSONObjectBookMapper();
     }
 
     public static BookRemoteDataSource getInstance(@NonNull Context context) {
@@ -43,29 +48,21 @@ public class BookRemoteDataSource implements BookDataSource {
     }
 
     @Override
-    public void getBook(@NonNull Long bookId, @NonNull DataListener<Book> dataListener) {
-
-    }
-
-    @Override
-    public void getBookList(@NonNull DataListListener<Book> dataListListener) {
-
-    }
-
-    @Override
     public void createBook(@NonNull Book book) {
 
     }
 
     @Override
-    public void createBook(@NonNull Book book, @NonNull CreateListener<Book> createListener) {
-        new Handler().postAtTime(new Runnable() {
-            @Override
-            public void run() {
-                JSONObject jsonObject = BookDemoData.getJSONBook(new Random().nextInt(5));
-                
-            }
-        }, 1000);
+    public void createBook(@NonNull final Book book, @NonNull final CreateListener<Book> createListener) {
+        // Simulate delay
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {}
+
+        BookDemoData.remoteApi_createBook();
+
+        if(new Random().nextBoolean()) createListener.onSuccess(book);
+        else createListener.onFailed("Unable to create book");
     }
 
     @Override
@@ -85,6 +82,22 @@ public class BookRemoteDataSource implements BookDataSource {
 
     @Override
     public void deleteBook(@NonNull Long bookId, @NonNull DeleteListener deleteListener) {
+
+    }
+
+    @Override
+    public void getBook(@NonNull Long bookId, @NonNull DataListener<Book> dataListener) {
+        JSONObject jsonObject = BookDemoData.getJSONBook(bookId);
+        Book book = mBookMapper.toDomainObject(jsonObject);
+        if(null == book) {
+            dataListener.onDataNotAvailable("Not Available");
+            return;
+        }
+        dataListener.onDataLoaded(book);
+    }
+
+    @Override
+    public void getBookList(@NonNull DataListListener<Book> dataListListener) {
 
     }
 }

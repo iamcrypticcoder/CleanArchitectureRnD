@@ -25,11 +25,21 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Gson library
+    // Link: https://github.com/google/gson
+    compile 'com.google.code.gson:gson:2.8.2'
+
+    // Enable Multidex for Apps with Over 64K Methods
+    // Link: https://developer.android.com/studio/build/multidex.html
+    compile 'com.android.support:multidex:1.0.1'
+
+
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:multidex:1.0.1'
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
 }

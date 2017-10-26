@@ -1,5 +1,6 @@
 package com.crypticcoder.cleanarchitecture.data.book;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.crypticcoder.cleanarchitecture.data.CreateListener;
@@ -14,15 +15,24 @@ import com.crypticcoder.cleanarchitecture.domain.model.Book;
  */
 
 public class BookCacheDataSource implements BookDataSource {
+    private static BookCacheDataSource mInstance = null;
 
-    @Override
-    public void getBook(@NonNull Long bookId, @NonNull DataListener<Book> dataListener) {
+    private Context mContext;
 
+    private BookCacheDataSource(@NonNull Context context) {
+        mContext = context;
     }
 
-    @Override
-    public void getBookList(@NonNull DataListListener<Book> dataListListener) {
-
+    public static BookCacheDataSource getInstance(@NonNull Context context) {
+        if (mInstance == null) {
+            // Thread Safe. Might be costly operation in some case
+            synchronized (BookCacheDataSource.class) {
+                if (mInstance == null) {
+                    mInstance = new BookCacheDataSource(context);
+                }
+            }
+        }
+        return mInstance;
     }
 
     @Override
@@ -53,5 +63,15 @@ public class BookCacheDataSource implements BookDataSource {
     @Override
     public void deleteBook(@NonNull Long bookId, @NonNull DeleteListener deleteListener) {
 
+    }
+
+    @Override
+    public void getBook(@NonNull Long bookId, @NonNull DataListener<Book> dataListener) {
+        dataListener.onDataNotAvailable("Not Available");
+    }
+
+    @Override
+    public void getBookList(@NonNull DataListListener<Book> dataListListener) {
+        dataListListener.onDataNotAvailable("Not Available");
     }
 }

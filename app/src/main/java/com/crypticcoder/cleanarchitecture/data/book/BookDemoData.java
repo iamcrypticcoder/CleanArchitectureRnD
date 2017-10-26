@@ -1,27 +1,39 @@
 package com.crypticcoder.cleanarchitecture.data.book;
 
 import com.crypticcoder.cleanarchitecture.data.models.RealmBook;
+import com.crypticcoder.cleanarchitecture.domain.model.Book;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Cryptic Coder on 26,October,2017
  */
 
 public class BookDemoData {
+    public static Map<Long, JSONObject> bookDb;
     public static JSONArray bookJsonArray;
     public static RealmBook[] realmBooks;
 
 
     static {
+        bookDb = new HashMap<>();
         bookJsonArray = new JSONArray();
+
+        /*
         realmBooks = new RealmBook[5];
 
         realmBooks[0] = new RealmBook();
@@ -53,6 +65,7 @@ public class BookDemoData {
         realmBooks[4].title = "Gulliver's Travels";
         realmBooks[4].authors = Arrays.asList("Jonathan Swift");
         realmBooks[4].publishedDate = new Date();
+        */
 
         try {
             JSONObject obj = new JSONObject();
@@ -60,45 +73,95 @@ public class BookDemoData {
             obj.put("title", "War and Peace");
             obj.put("authors", "[Leo Tolstoy]");
             obj.put("publishedDate", new Date().getTime());
-            bookJsonArray.put(0, obj);
+            bookDb.put(0L, obj);
 
             obj = new JSONObject();
             obj.put("id", 2L);
             obj.put("title", "Hamlet");
             obj.put("authors", "[William Shakespeare]");
             obj.put("publishedDate", new Date().getTime());
-            bookJsonArray.put(1, obj);
+            bookDb.put(1L, obj);
 
             obj = new JSONObject();
             obj.put("id", 3L);
             obj.put("title", "Pride and Prejudice");
             obj.put("authors", "[Jane Austen]");
             obj.put("publishedDate", new Date().getTime());
-            bookJsonArray.put(2, obj);
+            bookDb.put(2L, obj);
 
             obj = new JSONObject();
             obj.put("id", 3L);
             obj.put("title", "Anna Karenina");
             obj.put("authors", "[Leo Tolstoy]");
             obj.put("publishedDate", new Date().getTime());
-            bookJsonArray.put(3, obj);
+            bookDb.put(3L, obj);
 
             obj = new JSONObject();
             obj.put("id", 3L);
             obj.put("title", "Gulliver's Travels");
             obj.put("authors", "[Jonathan Swift]");
             obj.put("publishedDate", new Date().getTime());
-            bookJsonArray.put(4, obj);
+            bookDb.put(4L, obj);
+
         } catch (JSONException e) {
 
         }
     }
 
-    public static RealmBook getRealmBook(int bookId) {
-        return realmBooks[bookId - 1];
+    public static RealmBook getRealmBook(Long bookId) {
+        return realmBooks[(int)(bookId - 1)];
     }
 
-    public static JSONObject getJSONBook(int bookId) {
-        return bookJsonArray.optJSONObject(bookId-1);
+    public static JSONObject getJSONBook(Long bookId) {
+        return bookJsonArray.optJSONObject((int)(bookId - 1));
+    }
+
+    public static boolean remoteApi_createBook(JSONObject jsonObject) {
+        Long id = jsonObject.optLong("id", 0L);
+        if(0L == id) return false;
+        if(bookDb.containsKey(id)) return false;
+
+        bookDb.put(id, jsonObject);
+        return true;
+    }
+
+    public static boolean remoteApi_updateBook(JSONObject jsonObject) {
+        Long id = jsonObject.optLong("id", 0L);
+        if(0L == id) return false;
+        if(!bookDb.containsKey(id)) return false;
+
+        bookDb.put(id, jsonObject);
+        return true;
+    }
+
+    public static boolean remoteApi_deleteBook(JSONObject jsonObject) {
+        Long id = jsonObject.optLong("id", 0L);
+        if(0L == id) return false;
+        if(!bookDb.containsKey(id)) return false;
+
+        bookDb.remove(id);
+        return true;
+    }
+
+    public static JSONObject remoteApi_getBook(Long bookId) {
+        if(false == bookDb.containsKey(bookId)) return null;
+        return bookDb.get(bookId);
+    }
+
+    public static JSONObject remoteApi_getBookList() {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        Gson gson = gsonBuilder.create();
+
+        int count = bookDb.values().size();
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("count", count);
+
+            Type listType = new TypeToken<List<JSONObject>>() {}.getType();
+            jsonObject.put("data", gson.toJson(bookDb.values(), listType));
+        } catch (JSONException e) {}
+
+        return jsonObject;
     }
 }

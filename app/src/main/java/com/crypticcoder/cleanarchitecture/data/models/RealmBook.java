@@ -3,6 +3,7 @@ package com.crypticcoder.cleanarchitecture.data.models;
 import java.util.Date;
 import java.util.List;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -17,9 +18,16 @@ public class RealmBook extends RealmObject {
 
     public String title;
 
-    public List<String> authors;
+    public RealmList<String> authors;
 
     public Date publishedDate;
 
     public Date syncTime;
+
+    // Realm Note: A default public constructor with no argument must be declared if a custom constructor is declared.
+    public RealmBook() {
+        authors = new RealmList<>();
+    }
+
+
 }

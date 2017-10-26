@@ -10,6 +10,8 @@ import com.crypticcoder.cleanarchitecture.data.DeleteListener;
 import com.crypticcoder.cleanarchitecture.data.UpdateListener;
 import com.crypticcoder.cleanarchitecture.domain.model.Book;
 
+import java.util.List;
+
 /**
  * Created by Cryptic Coder on 26,October,2017
  */
@@ -48,7 +50,67 @@ public class BookRepository {
         mInstance = null;
     }
 
-    void getBook(@NonNull final Long bookId, @NonNull final DataListener<Book> dataListener) {
+    public void createBook(@NonNull Book book) {
+        mRemoteDataSource.createBook(book);
+        mLocalDataSource.createBook(book);
+    }
+
+    public void createBook(@NonNull Book book, @NonNull final CreateListener<Book> createListener) {
+        mRemoteDataSource.createBook(book, new CreateListener<Book>() {
+            @Override
+            public void onSuccess(Book entity) {
+                mLocalDataSource.createBook(entity);
+                createListener.onSuccess(entity);
+            }
+
+            @Override
+            public void onFailed(String failureMessage) {
+                createListener.onFailed(failureMessage);
+            }
+        });
+    }
+
+    public void updateBook(@NonNull Book book) {
+        mRemoteDataSource.updateBook(book);
+        mLocalDataSource.updateBook(book);
+    }
+
+    public void updateBook(@NonNull Book book, @NonNull final UpdateListener<Book> updateListener) {
+        mRemoteDataSource.updateBook(book, new UpdateListener<Book>() {
+            @Override
+            public void onSuccess(Book entity) {
+                mLocalDataSource.updateBook(entity);
+                updateListener.onSuccess(entity);
+            }
+
+            @Override
+            public void onFailed(String failureMessage) {
+                updateListener.onFailed(failureMessage);
+            }
+        });
+    }
+
+    public void deleteBook(@NonNull Long bookId) {
+        mRemoteDataSource.deleteBook(bookId);
+        mLocalDataSource.deleteBook(bookId);
+    }
+
+    public void deleteBook(@NonNull final Long bookId, @NonNull final DeleteListener deleteListener) {
+        mRemoteDataSource.deleteBook(bookId, new DeleteListener() {
+            @Override
+            public void onSuccess() {
+                mLocalDataSource.deleteBook(bookId);
+                deleteListener.onSuccess();
+            }
+
+            @Override
+            public void onFailed(String failureMessage) {
+                deleteListener.onFailed(failureMessage);
+            }
+        });
+    }
+
+    public void getBook(@NonNull final Long bookId, @NonNull final DataListener<Book> dataListener) {
         // First check in cache
         mCacheDataSource.getBook(bookId, new DataListener<Book>() {
             @Override
@@ -75,63 +137,26 @@ public class BookRepository {
         });
     }
 
-    void getBookList(@NonNull DataListListener<Book> dataListListener) {
-
-    }
-
-    void createBook(@NonNull Book book) {
-
-    }
-
-    void createBook(@NonNull Book book, @NonNull final CreateListener<Book> createListener) {
-        mRemoteDataSource.createBook(book, new CreateListener<Book>() {
+    public void getBookList(@NonNull final DataListListener<Book> dataListListener) {
+        mCacheDataSource.getBookList(new DataListListener<Book>() {
             @Override
-            public void onSuccess(Book entity) {
-                mLocalDataSource.createBook(entity);
-                createListener.onSuccess(entity);
+            public void onDataListLoaded(List<Book> dataList) {
+                dataListListener.onDataListLoaded(dataList);
             }
 
             @Override
-            public void onFailed(String failureMessage) {
-                createListener.onFailed(failureMessage);
-            }
-        });
-    }
+            public void onDataNotAvailable(String errorMessage) {
+                mLocalDataSource.getBookList(new DataListListener<Book>() {
+                    @Override
+                    public void onDataListLoaded(List<Book> dataList) {
+                        dataListListener.onDataListLoaded(dataList);
+                    }
 
-    void updateBook(@NonNull Book book) {
-
-    }
-
-    void updateBook(@NonNull Book book, @NonNull final UpdateListener<Book> updateListener) {
-        mRemoteDataSource.updateBook(book, new UpdateListener<Book>() {
-            @Override
-            public void onSuccess(Book entity) {
-                mLocalDataSource.updateBook(entity);
-                updateListener.onSuccess(entity);
-            }
-
-            @Override
-            public void onFailed(String failureMessage) {
-                updateListener.onFailed(failureMessage);
-            }
-        });
-    }
-
-    void deleteBook(@NonNull Long bookId) {
-
-    }
-
-    void deleteBook(@NonNull final Long bookId, @NonNull final DeleteListener deleteListener) {
-        mRemoteDataSource.deleteBook(bookId, new DeleteListener() {
-            @Override
-            public void onSuccess() {
-                mLocalDataSource.deleteBook(bookId);
-                deleteListener.onSuccess();
-            }
-
-            @Override
-            public void onFailed(String failureMessage) {
-                deleteListener.onFailed(failureMessage);
+                    @Override
+                    public void onDataNotAvailable(String errorMessage) {
+                        mRemoteDataSource.getBookList(dataListListener);
+                    }
+                });
             }
         });
     }

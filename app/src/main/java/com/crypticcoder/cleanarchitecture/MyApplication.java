@@ -1,3 +1,5 @@
+package com.crypticcoder.cleanarchitecture;
+
 import android.content.Context;
 import android.support.multidex.MultiDexApplication;
 

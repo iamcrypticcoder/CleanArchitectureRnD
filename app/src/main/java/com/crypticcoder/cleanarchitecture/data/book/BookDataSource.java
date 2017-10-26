@@ -15,10 +15,6 @@ import com.crypticcoder.cleanarchitecture.domain.model.Book;
 
 public interface BookDataSource {
 
-    void getBook(@NonNull Long bookId, @NonNull DataListener<Book> dataListener);
-
-    void getBookList(@NonNull DataListListener<Book> dataListListener);
-
     void createBook(@NonNull Book book);
     void createBook(@NonNull Book book, @NonNull CreateListener<Book> createListener);
 
@@ -27,4 +23,8 @@ public interface BookDataSource {
 
     void deleteBook(@NonNull Long bookId);
     void deleteBook(@NonNull Long bookId, @NonNull DeleteListener deleteListener);
+
+    void getBook(@NonNull Long bookId, @NonNull DataListener<Book> dataListener);
+
+    void getBookList(@NonNull DataListListener<Book> dataListListener);
 }

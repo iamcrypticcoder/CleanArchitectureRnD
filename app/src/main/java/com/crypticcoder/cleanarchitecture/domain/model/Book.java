@@ -1,5 +1,6 @@
 package com.crypticcoder.cleanarchitecture.domain.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -16,6 +17,10 @@ public class Book {
     private List<String> authors;
 
     private Date publishedDate;
+
+    public Book() {
+        authors = new ArrayList<>();
+    }
 
     public Long getId() {
         return id;
