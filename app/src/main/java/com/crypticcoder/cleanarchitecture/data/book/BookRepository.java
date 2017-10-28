@@ -2,6 +2,7 @@ package com.crypticcoder.cleanarchitecture.data.book;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.crypticcoder.cleanarchitecture.data.CreateListener;
 import com.crypticcoder.cleanarchitecture.data.DataListListener;
@@ -9,6 +10,7 @@ import com.crypticcoder.cleanarchitecture.data.DataListener;
 import com.crypticcoder.cleanarchitecture.data.DeleteListener;
 import com.crypticcoder.cleanarchitecture.data.UpdateListener;
 import com.crypticcoder.cleanarchitecture.domain.model.Book;
+import com.crypticcoder.cleanarchitecture.domain.model.BookListFilter;
 
 import java.util.List;
 
@@ -137,8 +139,8 @@ public class BookRepository {
         });
     }
 
-    public void getBookList(@NonNull final DataListListener<Book> dataListListener) {
-        mCacheDataSource.getBookList(new DataListListener<Book>() {
+    public void getBookList(@Nullable final BookListFilter bookListFilter, @NonNull final DataListListener<Book> dataListListener) {
+        mCacheDataSource.getBookList(bookListFilter, new DataListListener<Book>() {
             @Override
             public void onDataListLoaded(List<Book> dataList) {
                 dataListListener.onDataListLoaded(dataList);
@@ -146,7 +148,7 @@ public class BookRepository {
 
             @Override
             public void onDataNotAvailable(String errorMessage) {
-                mLocalDataSource.getBookList(new DataListListener<Book>() {
+                mLocalDataSource.getBookList(bookListFilter, new DataListListener<Book>() {
                     @Override
                     public void onDataListLoaded(List<Book> dataList) {
                         dataListListener.onDataListLoaded(dataList);
@@ -154,7 +156,7 @@ public class BookRepository {
 
                     @Override
                     public void onDataNotAvailable(String errorMessage) {
-                        mRemoteDataSource.getBookList(dataListListener);
+                        mRemoteDataSource.getBookList(bookListFilter, dataListListener);
                     }
                 });
             }

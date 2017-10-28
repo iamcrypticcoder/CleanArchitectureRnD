@@ -2,6 +2,7 @@ package com.crypticcoder.cleanarchitecture.data.book;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.crypticcoder.cleanarchitecture.data.CreateListener;
 import com.crypticcoder.cleanarchitecture.data.DataListListener;
@@ -9,6 +10,7 @@ import com.crypticcoder.cleanarchitecture.data.DataListener;
 import com.crypticcoder.cleanarchitecture.data.DeleteListener;
 import com.crypticcoder.cleanarchitecture.data.UpdateListener;
 import com.crypticcoder.cleanarchitecture.domain.model.Book;
+import com.crypticcoder.cleanarchitecture.domain.model.BookListFilter;
 
 /**
  * Created by Cryptic Coder on 26,October,2017
@@ -71,7 +73,8 @@ public class BookCacheDataSource implements BookDataSource {
     }
 
     @Override
-    public void getBookList(@NonNull DataListListener<Book> dataListListener) {
+    public void getBookList(@Nullable BookListFilter bookListFilter, @NonNull DataListListener<Book> dataListListener) {
+        // TODO: Add book list filter info in cache query. For simplicity this part is omitted.
         dataListListener.onDataNotAvailable("Not Available");
     }
 }

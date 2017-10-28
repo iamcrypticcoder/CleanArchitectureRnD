@@ -1,4 +1,4 @@
-package com.crypticcoder.cleanarchitecture.data.book;
+package com.crypticcoder.cleanarchitecture.data.restapi;
 
 import com.crypticcoder.cleanarchitecture.data.models.RealmBook;
 import com.crypticcoder.cleanarchitecture.domain.model.Book;
@@ -25,6 +25,8 @@ import java.util.Map;
 
 public class BookDemoData {
     public static Map<Long, JSONObject> bookDb;
+    public static Long bookIncrementalId;
+
     public static JSONArray bookJsonArray;
     public static RealmBook[] realmBooks;
 
@@ -103,6 +105,9 @@ public class BookDemoData {
             obj.put("publishedDate", new Date().getTime());
             bookDb.put(4L, obj);
 
+
+            bookIncrementalId = 5L;
+
         } catch (JSONException e) {
 
         }
@@ -117,11 +122,8 @@ public class BookDemoData {
     }
 
     public static boolean remoteApi_createBook(JSONObject jsonObject) {
-        Long id = jsonObject.optLong("id", 0L);
-        if(0L == id) return false;
-        if(bookDb.containsKey(id)) return false;
-
-        bookDb.put(id, jsonObject);
+        bookDb.put(bookIncrementalId, jsonObject);
+        bookIncrementalId++;
         return true;
     }
 
@@ -134,12 +136,11 @@ public class BookDemoData {
         return true;
     }
 
-    public static boolean remoteApi_deleteBook(JSONObject jsonObject) {
-        Long id = jsonObject.optLong("id", 0L);
-        if(0L == id) return false;
-        if(!bookDb.containsKey(id)) return false;
+    public static boolean remoteApi_deleteBook(Long bookId) {
+        if(0L == bookId) return false;
+        if(!bookDb.containsKey(bookId)) return false;
 
-        bookDb.remove(id);
+        bookDb.remove(bookId);
         return true;
     }
 
@@ -158,10 +159,13 @@ public class BookDemoData {
         try {
             jsonObject.put("count", count);
 
-            Type listType = new TypeToken<List<JSONObject>>() {}.getType();
-            jsonObject.put("data", gson.toJson(bookDb.values(), listType));
+            JSONArray list = new JSONArray();
+            for(JSONObject book : bookDb.values()) list.put(book);
+            jsonObject.put("data", list);
         } catch (JSONException e) {}
 
         return jsonObject;
     }
+
+
 }

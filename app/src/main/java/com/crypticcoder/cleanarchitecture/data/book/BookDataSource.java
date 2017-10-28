@@ -1,6 +1,7 @@
 package com.crypticcoder.cleanarchitecture.data.book;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.crypticcoder.cleanarchitecture.data.CreateListener;
 import com.crypticcoder.cleanarchitecture.data.DataListListener;
@@ -8,6 +9,7 @@ import com.crypticcoder.cleanarchitecture.data.DataListener;
 import com.crypticcoder.cleanarchitecture.data.DeleteListener;
 import com.crypticcoder.cleanarchitecture.data.UpdateListener;
 import com.crypticcoder.cleanarchitecture.domain.model.Book;
+import com.crypticcoder.cleanarchitecture.domain.model.BookListFilter;
 
 /**
  * Created by Cryptic Coder on 26,October,2017
@@ -26,5 +28,5 @@ public interface BookDataSource {
 
     void getBook(@NonNull Long bookId, @NonNull DataListener<Book> dataListener);
 
-    void getBookList(@NonNull DataListListener<Book> dataListListener);
+    void getBookList(@Nullable BookListFilter bookListFilter, @NonNull DataListListener<Book> dataListListener);
 }

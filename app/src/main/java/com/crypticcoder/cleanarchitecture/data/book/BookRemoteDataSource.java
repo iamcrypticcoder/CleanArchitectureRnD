@@ -1,9 +1,8 @@
 package com.crypticcoder.cleanarchitecture.data.book;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.crypticcoder.cleanarchitecture.data.CreateListener;
 import com.crypticcoder.cleanarchitecture.data.DataListListener;
@@ -12,11 +11,15 @@ import com.crypticcoder.cleanarchitecture.data.DeleteListener;
 import com.crypticcoder.cleanarchitecture.data.UpdateListener;
 import com.crypticcoder.cleanarchitecture.data.mappers.JSONObjectMapper;
 import com.crypticcoder.cleanarchitecture.data.mappers.impl.JSONObjectBookMapper;
+import com.crypticcoder.cleanarchitecture.data.restapi.BookDemoData;
 import com.crypticcoder.cleanarchitecture.domain.model.Book;
+import com.crypticcoder.cleanarchitecture.domain.model.BookListFilter;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Cryptic Coder on 26,October,2017
@@ -54,14 +57,14 @@ public class BookRemoteDataSource implements BookDataSource {
 
     @Override
     public void createBook(@NonNull final Book book, @NonNull final CreateListener<Book> createListener) {
-        // Simulate delay
+        // Simulation of 1 second delay
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {}
 
-        BookDemoData.remoteApi_createBook();
+        boolean result = BookDemoData.remoteApi_createBook(mBookMapper.toJSONObject(book));
 
-        if(new Random().nextBoolean()) createListener.onSuccess(book);
+        if(result) createListener.onSuccess(book);
         else createListener.onFailed("Unable to create book");
     }
 
@@ -72,7 +75,15 @@ public class BookRemoteDataSource implements BookDataSource {
 
     @Override
     public void updateBook(@NonNull Book book, @NonNull UpdateListener<Book> updateListener) {
+        // Simulation of 1 second delay
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {}
 
+        boolean result = BookDemoData.remoteApi_updateBook(mBookMapper.toJSONObject(book));
+
+        if(result) updateListener.onSuccess(book);
+        else updateListener.onFailed("Unable to update book");
     }
 
     @Override
@@ -82,12 +93,20 @@ public class BookRemoteDataSource implements BookDataSource {
 
     @Override
     public void deleteBook(@NonNull Long bookId, @NonNull DeleteListener deleteListener) {
+        // Simulation of 1 second delay
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {}
 
+        boolean result = BookDemoData.remoteApi_deleteBook(bookId);
+
+        if(result) deleteListener.onSuccess();
+        else deleteListener.onFailed("Unable to delete book");
     }
 
     @Override
     public void getBook(@NonNull Long bookId, @NonNull DataListener<Book> dataListener) {
-        JSONObject jsonObject = BookDemoData.getJSONBook(bookId);
+        JSONObject jsonObject = BookDemoData.remoteApi_getBook(bookId);
         Book book = mBookMapper.toDomainObject(jsonObject);
         if(null == book) {
             dataListener.onDataNotAvailable("Not Available");
@@ -97,7 +116,19 @@ public class BookRemoteDataSource implements BookDataSource {
     }
 
     @Override
-    public void getBookList(@NonNull DataListListener<Book> dataListListener) {
-
+    public void getBookList(@Nullable BookListFilter bookListFilter, @NonNull DataListListener<Book> dataListListener) {
+        // TODO: Send book list filter info to server. For simplicity this part is omitted.
+        JSONObject jsonObject = BookDemoData.remoteApi_getBookList();
+        int count = jsonObject.optInt("count");
+        if(0 == count) {
+            dataListListener.onDataNotAvailable("No book found");
+            return;
+        }
+        JSONArray jsonArray = jsonObject.optJSONArray("data");
+        List<Book> bookList = new ArrayList<>();
+        for(int i=0; i <  count; i++) {
+            bookList.add(mBookMapper.toDomainObject(jsonArray.optJSONObject(i)));
+        }
+        dataListListener.onDataListLoaded(bookList);
     }
 }

@@ -27,6 +27,8 @@ public class JSONObjectBookMapper implements JSONObjectMapper<JSONObject, Book> 
 
     @Override
     public JSONObject toJSONObject(Book obj) {
+        if(null == obj) return null;
+
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         Gson gson = gsonBuilder.create();
@@ -48,6 +50,8 @@ public class JSONObjectBookMapper implements JSONObjectMapper<JSONObject, Book> 
 
     @Override
     public Book toDomainObject(JSONObject obj) {
+        if(null == obj) return null;
+
         Book book = new Book();
         try {
             book.setId(obj.optLong("id"));
