@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 
 import com.crypticcoder.cleanarchitecture.MyApplication;
 import com.crypticcoder.cleanarchitecture.data.book.BookRepository;
-import com.crypticcoder.cleanarchitecture.data.di.RepositoryComponent;
 import com.crypticcoder.cleanarchitecture.data.user.UserRepository;
 import com.crypticcoder.cleanarchitecture.domain.executor.Executor;
 import com.crypticcoder.cleanarchitecture.domain.executor.MainThread;
@@ -55,7 +54,12 @@ public interface AppComponent {
 */
 
 @Singleton
-@Component(dependencies = RepositoryComponent.class, modules = { AppModule.class, UtilModule.class })
+@Component(modules = {
+        AppModule.class,
+        UtilModule.class,
+        BookRepositoryModule.class,
+        UserRepositoryModule.class
+})
 public interface AppComponent {
 
     // Exposed for parent component that will use this comp as dependency

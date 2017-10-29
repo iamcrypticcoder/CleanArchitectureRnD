@@ -10,7 +10,7 @@ import dagger.Component;
 /**
  * Created by Cryptic Coder on 30,October,2017
  */
-
+/*
 @Singleton
 @Component(modules = { BookRepositoryModule.class, UserRepositoryModule.class })
 public interface RepositoryComponent {
@@ -19,3 +19,4 @@ public interface RepositoryComponent {
     BookRepository bookRepository();
     UserRepository userRepository();
 }
+*/

@@ -7,6 +7,7 @@ import com.crypticcoder.cleanarchitecture.data.di.BookRepositoryModule;
 import com.crypticcoder.cleanarchitecture.data.di.UserRepositoryModule;
 import com.crypticcoder.cleanarchitecture.di.AppComponent;
 import com.crypticcoder.cleanarchitecture.di.AppModule;
+import com.crypticcoder.cleanarchitecture.di.DaggerAppComponent;
 import com.crypticcoder.cleanarchitecture.di.UtilModule;
 
 import io.realm.Realm;

@@ -32,6 +32,7 @@ public class BookListPresenterImpl extends AbstractPresenter implements BookList
     public BookListPresenterImpl(Executor executor, MainThread mainThread) {
         super(executor, mainThread);
         //mGetBookListInteractor = new GetBookListInteractorImpl(executor, mainThread, );
+
     }
 
     @Override
