@@ -33,11 +33,12 @@ public class BookRemoteDataSource implements BookDataSource {
 
     private JSONObjectMapper<JSONObject, Book> mBookMapper;
 
-    private BookRemoteDataSource(@NonNull Context context) {
+    public BookRemoteDataSource(@NonNull Context context) {
         mContext = context;
         mBookMapper = new JSONObjectBookMapper();
     }
 
+    /*
     public static BookRemoteDataSource getInstance(@NonNull Context context) {
         if (mInstance == null) {
             // Thread Safe. Might be costly operation in some case
@@ -49,6 +50,7 @@ public class BookRemoteDataSource implements BookDataSource {
         }
         return mInstance;
     }
+    */
 
     @Override
     public void createBook(@NonNull Book book) {

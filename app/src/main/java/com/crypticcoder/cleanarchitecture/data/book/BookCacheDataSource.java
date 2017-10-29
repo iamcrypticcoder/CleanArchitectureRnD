@@ -21,10 +21,11 @@ public class BookCacheDataSource implements BookDataSource {
 
     private Context mContext;
 
-    private BookCacheDataSource(@NonNull Context context) {
+    public BookCacheDataSource(@NonNull Context context) {
         mContext = context;
     }
 
+    /*
     public static BookCacheDataSource getInstance(@NonNull Context context) {
         if (mInstance == null) {
             // Thread Safe. Might be costly operation in some case
@@ -36,6 +37,7 @@ public class BookCacheDataSource implements BookDataSource {
         }
         return mInstance;
     }
+    */
 
     @Override
     public void createBook(@NonNull Book book) {

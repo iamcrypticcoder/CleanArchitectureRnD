@@ -33,11 +33,12 @@ public class BookLocalDataSource implements BookDataSource {
 
     private RealmObjectMapper<RealmBook, Book> mBookMapper;
 
-    private BookLocalDataSource(@NonNull Context context) {
+    public BookLocalDataSource(@NonNull Context context) {
         mContext = context;
         mBookMapper = new RealmBookMapper();
     }
 
+    /*
     public static BookLocalDataSource getInstance(@NonNull Context context) {
         if (mInstance == null) {
             // Thread Safe. Might be costly operation in some case
@@ -49,6 +50,7 @@ public class BookLocalDataSource implements BookDataSource {
         }
         return mInstance;
     }
+    */
 
     @Override
     public void createBook(@NonNull final Book book) {

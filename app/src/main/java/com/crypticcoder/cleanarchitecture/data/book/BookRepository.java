@@ -14,6 +14,10 @@ import com.crypticcoder.cleanarchitecture.domain.model.BookListFilter;
 
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 /**
  * Created by Cryptic Coder on 26,October,2017
  */
@@ -26,14 +30,16 @@ public class BookRepository {
     private BookDataSource mLocalDataSource;
     private BookDataSource mRemoteDataSource;
 
-    private BookRepository(@NonNull BookDataSource cacheDataSource,
-                           @NonNull BookDataSource localDataSource,
-                           @NonNull BookDataSource remoteDataSource) {
+    @Inject
+    public BookRepository(@Named("bookCacheDataSource") @NonNull BookDataSource cacheDataSource,
+                          @Named("bookLocalDataSource") @NonNull BookDataSource localDataSource,
+                          @Named("bookRemoteDataSource") @NonNull BookDataSource remoteDataSource) {
         mCacheDataSource = cacheDataSource;
         mLocalDataSource = localDataSource;
         mRemoteDataSource = remoteDataSource;
     }
 
+    /*
     public static BookRepository getInstance(@NonNull BookDataSource cacheDataSource,
                                              @NonNull BookDataSource localDataSource,
                                              @NonNull BookDataSource remoteDataSource) {
@@ -47,6 +53,7 @@ public class BookRepository {
         }
         return mInstance;
     }
+    */
 
     public static void destroyInstance() {
         mInstance = null;

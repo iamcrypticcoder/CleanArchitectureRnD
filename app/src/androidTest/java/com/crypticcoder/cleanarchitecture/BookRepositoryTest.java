@@ -1,7 +1,10 @@
 package com.crypticcoder.cleanarchitecture;
 
+import android.app.Application;
+import android.app.Instrumentation;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.Espresso;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.crypticcoder.cleanarchitecture.data.CreateListener;
@@ -13,6 +16,8 @@ import com.crypticcoder.cleanarchitecture.data.book.BookCacheDataSource;
 import com.crypticcoder.cleanarchitecture.data.book.BookLocalDataSource;
 import com.crypticcoder.cleanarchitecture.data.book.BookRemoteDataSource;
 import com.crypticcoder.cleanarchitecture.data.book.BookRepository;
+import com.crypticcoder.cleanarchitecture.data.di.BookRepositoryModule;
+import com.crypticcoder.cleanarchitecture.di.AppModule;
 import com.crypticcoder.cleanarchitecture.domain.model.Book;
 import com.crypticcoder.cleanarchitecture.domain.model.BookListFilter;
 
@@ -23,6 +28,8 @@ import org.junit.runner.RunWith;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -43,11 +50,18 @@ public class BookRepositoryTest {
     @Before
     public void setUp() throws Exception {
         appContext = InstrumentationRegistry.getTargetContext();
+        /*
         BookCacheDataSource cacheDataSource = BookCacheDataSource.getInstance(appContext);
         BookLocalDataSource localDataSource = BookLocalDataSource.getInstance(appContext);
         BookRemoteDataSource remoteDataSource = BookRemoteDataSource.getInstance(appContext);
 
         mBookRepository = BookRepository.getInstance(cacheDataSource, localDataSource, remoteDataSource);
+        */
+    }
+
+    private Application getApp() {
+        return (Application) InstrumentationRegistry.getInstrumentation()
+                .getTargetContext().getApplicationContext();
     }
 
     @Test
