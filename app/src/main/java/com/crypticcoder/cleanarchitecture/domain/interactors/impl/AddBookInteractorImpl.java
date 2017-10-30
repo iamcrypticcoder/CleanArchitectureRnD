@@ -25,9 +25,9 @@ public class AddBookInteractorImpl extends AbstractInteractor implements AddBook
     private Book mBook;
 
     @Inject
-    public AddBookInteractorImpl(Executor threadExecutor,
-                                 MainThread mainThread,
-                                 BookRepository bookRepository) {
+    public AddBookInteractorImpl(@NonNull Executor threadExecutor,
+                                 @NonNull MainThread mainThread,
+                                 @NonNull BookRepository bookRepository) {
         super(threadExecutor, mainThread);
         mBookRepository = bookRepository;
     }

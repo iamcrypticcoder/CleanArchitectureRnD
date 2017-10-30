@@ -9,8 +9,13 @@ import com.crypticcoder.cleanarchitecture.data.DataListListener;
 import com.crypticcoder.cleanarchitecture.data.DataListener;
 import com.crypticcoder.cleanarchitecture.data.DeleteListener;
 import com.crypticcoder.cleanarchitecture.data.UpdateListener;
+import com.crypticcoder.cleanarchitecture.data.mappers.RealmObjectMapper;
+import com.crypticcoder.cleanarchitecture.data.models.RealmUser;
 import com.crypticcoder.cleanarchitecture.domain.model.User;
 import com.crypticcoder.cleanarchitecture.domain.model.UserListFilter;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * Created by Cryptic Coder on 28,October,2017
@@ -20,8 +25,13 @@ public class UserLocalDataSource implements UserDataSource {
 
     private Context mContext;
 
-    public UserLocalDataSource(@NonNull Context context) {
+    private RealmObjectMapper<RealmUser, User> mRealmMapper;
+
+    @Inject
+    public UserLocalDataSource(@NonNull Context context,
+                               @Named("RealmUserMapper") @NonNull RealmObjectMapper<RealmUser, User> mapper) {
         mContext = context;
+        mRealmMapper = mapper;
     }
 
     @Override

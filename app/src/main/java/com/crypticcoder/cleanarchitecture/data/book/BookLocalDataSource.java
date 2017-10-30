@@ -18,6 +18,9 @@ import com.crypticcoder.cleanarchitecture.domain.model.BookListFilter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -31,11 +34,13 @@ public class BookLocalDataSource implements BookDataSource {
 
     private Context mContext;
 
-    private RealmObjectMapper<RealmBook, Book> mBookMapper;
+    private RealmObjectMapper<RealmBook, Book> mRealmMapper;
 
-    public BookLocalDataSource(@NonNull Context context) {
+    @Inject
+    public BookLocalDataSource(@NonNull Context context,
+                               @Named("RealmBookMapper") @NonNull RealmObjectMapper<RealmBook, Book> mapper) {
         mContext = context;
-        mBookMapper = new RealmBookMapper();
+        mRealmMapper = mapper;
     }
 
     /*
@@ -58,7 +63,7 @@ public class BookLocalDataSource implements BookDataSource {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                RealmBook realmBook = mBookMapper.toRealmObject(book);
+                RealmBook realmBook = mRealmMapper.toRealmObject(book);
                 realm.copyToRealmOrUpdate(realmBook);
             }
         });
@@ -77,7 +82,7 @@ public class BookLocalDataSource implements BookDataSource {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                RealmBook realmBook = mBookMapper.toRealmObject(book);
+                RealmBook realmBook = mRealmMapper.toRealmObject(book);
                 realm.copyToRealmOrUpdate(realmBook);
             }
         });
@@ -117,7 +122,7 @@ public class BookLocalDataSource implements BookDataSource {
             dataListener.onDataNotAvailable("Didn't find");
             return;
         }
-        dataListener.onDataLoaded(mBookMapper.toDomainObject(realmBook));
+        dataListener.onDataLoaded(mRealmMapper.toDomainObject(realmBook));
     }
 
     @Override
@@ -130,7 +135,7 @@ public class BookLocalDataSource implements BookDataSource {
             return;
         }
         final List<Book> bookList = new ArrayList<>();
-        for(RealmBook realmBook : results) bookList.add(mBookMapper.toDomainObject(realmBook));
+        for(RealmBook realmBook : results) bookList.add(mRealmMapper.toDomainObject(realmBook));
         dataListListener.onDataListLoaded(bookList);
     }
 }

@@ -1,4 +1,4 @@
-package com.crypticcoder.cleanarchitecture.di;
+package com.crypticcoder.cleanarchitecture.di.modules;
 
 import android.app.Application;
 import android.content.Context;

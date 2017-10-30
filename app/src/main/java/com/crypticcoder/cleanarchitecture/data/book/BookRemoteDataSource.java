@@ -21,6 +21,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 /**
  * Created by Cryptic Coder on 26,October,2017
  */
@@ -31,11 +34,13 @@ public class BookRemoteDataSource implements BookDataSource {
 
     private Context mContext;
 
-    private JSONObjectMapper<JSONObject, Book> mBookMapper;
+    private JSONObjectMapper<JSONObject, Book> mJSONMapper;
 
-    public BookRemoteDataSource(@NonNull Context context) {
+    @Inject
+    public BookRemoteDataSource(@NonNull Context context,
+                                @Named("JSONObjectBookMapper") @NonNull JSONObjectMapper<JSONObject, Book> mapper) {
         mContext = context;
-        mBookMapper = new JSONObjectBookMapper();
+        mJSONMapper = mapper;
     }
 
     /*
@@ -64,7 +69,7 @@ public class BookRemoteDataSource implements BookDataSource {
             Thread.sleep(1000);
         } catch (InterruptedException e) {}
 
-        boolean result = BookDemoData.remoteApi_createBook(mBookMapper.toJSONObject(book));
+        boolean result = BookDemoData.remoteApi_createBook(mJSONMapper.toJSONObject(book));
 
         if(result) createListener.onSuccess(book);
         else createListener.onFailed("Unable to create book");
@@ -82,7 +87,7 @@ public class BookRemoteDataSource implements BookDataSource {
             Thread.sleep(1000);
         } catch (InterruptedException e) {}
 
-        boolean result = BookDemoData.remoteApi_updateBook(mBookMapper.toJSONObject(book));
+        boolean result = BookDemoData.remoteApi_updateBook(mJSONMapper.toJSONObject(book));
 
         if(result) updateListener.onSuccess(book);
         else updateListener.onFailed("Unable to update book");
@@ -109,7 +114,7 @@ public class BookRemoteDataSource implements BookDataSource {
     @Override
     public void getBook(@NonNull Long bookId, @NonNull DataListener<Book> dataListener) {
         JSONObject jsonObject = BookDemoData.remoteApi_getBook(bookId);
-        Book book = mBookMapper.toDomainObject(jsonObject);
+        Book book = mJSONMapper.toDomainObject(jsonObject);
         if(null == book) {
             dataListener.onDataNotAvailable("Not Available");
             return;
@@ -129,7 +134,7 @@ public class BookRemoteDataSource implements BookDataSource {
         JSONArray jsonArray = jsonObject.optJSONArray("data");
         List<Book> bookList = new ArrayList<>();
         for(int i=0; i <  count; i++) {
-            bookList.add(mBookMapper.toDomainObject(jsonArray.optJSONObject(i)));
+            bookList.add(mJSONMapper.toDomainObject(jsonArray.optJSONObject(i)));
         }
         dataListListener.onDataListLoaded(bookList);
     }

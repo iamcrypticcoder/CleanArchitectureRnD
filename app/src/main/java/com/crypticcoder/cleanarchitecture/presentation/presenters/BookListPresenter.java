@@ -13,13 +13,22 @@ import java.util.List;
 
 public interface BookListPresenter extends BaseFragmentPresenter {
     interface View extends BaseView {
-        void onBookListFetched(List<Book> bookList);
-        void onBookAdded(Book book);
-        void onBookRemoved(boolean success);
+        void showBookList(List<Book> bookList);
+        void prependBookList(List<Book> bookList);
+        void appendBookList(List<Book> bookList);
+        void showToast(String message);
     }
 
-    void setView(View view);
-    void fetchBookList(BookListFilter bookListFilter);
-    void addBook(Book book);
+    BookListFilter getBookListFilter();
+    void setBookListFilter(BookListFilter filter);
+
+    void loadBookList();
+    void loadPreviousBookList();
+    void loadRecentBookList();
+    void openAddNewBook();
     void removeBook(Book book);
+    void openBookDetail(Book book);
+
+    void takeView(BookListPresenter.View view);
+    void dropView();
 }

@@ -12,6 +12,8 @@ import com.crypticcoder.cleanarchitecture.data.UpdateListener;
 import com.crypticcoder.cleanarchitecture.domain.model.Book;
 import com.crypticcoder.cleanarchitecture.domain.model.BookListFilter;
 
+import javax.inject.Inject;
+
 /**
  * Created by Cryptic Coder on 26,October,2017
  */
@@ -21,6 +23,7 @@ public class BookCacheDataSource implements BookDataSource {
 
     private Context mContext;
 
+    @Inject
     public BookCacheDataSource(@NonNull Context context) {
         mContext = context;
     }

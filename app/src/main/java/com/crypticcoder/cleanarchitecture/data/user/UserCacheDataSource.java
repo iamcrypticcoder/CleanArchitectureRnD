@@ -12,6 +12,8 @@ import com.crypticcoder.cleanarchitecture.data.UpdateListener;
 import com.crypticcoder.cleanarchitecture.domain.model.User;
 import com.crypticcoder.cleanarchitecture.domain.model.UserListFilter;
 
+import javax.inject.Inject;
+
 /**
  * Created by Cryptic Coder on 28,October,2017
  */
@@ -20,6 +22,7 @@ public class UserCacheDataSource implements UserDataSource {
 
     private Context mContext;
 
+    @Inject
     public UserCacheDataSource(@NonNull Context context) {
         mContext = context;
     }

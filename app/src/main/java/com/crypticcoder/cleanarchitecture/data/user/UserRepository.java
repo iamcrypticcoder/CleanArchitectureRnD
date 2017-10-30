@@ -4,6 +4,9 @@ import android.support.annotation.NonNull;
 
 import com.crypticcoder.cleanarchitecture.data.user.UserDataSource;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 /**
  * Created by Cryptic Coder on 28,October,2017
  */
@@ -14,9 +17,10 @@ public class UserRepository {
     private UserDataSource mLocalDataSource;
     private UserDataSource mRemoteDataSource;
 
-    public UserRepository(@NonNull UserDataSource cacheDataSource,
-                          @NonNull UserDataSource localDataSource,
-                          @NonNull UserDataSource remoteDataSource) {
+    @Inject
+    public UserRepository(@Named("UserCacheDataSource") @NonNull UserDataSource cacheDataSource,
+                          @Named("UserLocalDataSource") @NonNull UserDataSource localDataSource,
+                          @Named("UserRemoteDataSource") @NonNull UserDataSource remoteDataSource) {
         mCacheDataSource = cacheDataSource;
         mLocalDataSource = localDataSource;
         mRemoteDataSource = remoteDataSource;

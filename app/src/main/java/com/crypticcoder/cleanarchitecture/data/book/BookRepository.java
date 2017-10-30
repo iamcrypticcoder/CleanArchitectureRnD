@@ -31,9 +31,9 @@ public class BookRepository {
     private BookDataSource mRemoteDataSource;
 
     @Inject
-    public BookRepository(@Named("bookCacheDataSource") @NonNull BookDataSource cacheDataSource,
-                          @Named("bookLocalDataSource") @NonNull BookDataSource localDataSource,
-                          @Named("bookRemoteDataSource") @NonNull BookDataSource remoteDataSource) {
+    public BookRepository(@Named("BookCacheDataSource") @NonNull BookDataSource cacheDataSource,
+                          @Named("BookLocalDataSource") @NonNull BookDataSource localDataSource,
+                          @Named("BookRemoteDataSource") @NonNull BookDataSource remoteDataSource) {
         mCacheDataSource = cacheDataSource;
         mLocalDataSource = localDataSource;
         mRemoteDataSource = remoteDataSource;

@@ -1,10 +1,8 @@
 package com.crypticcoder.cleanarchitecture;
 
 import android.app.Application;
-import android.app.Instrumentation;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
-import android.support.test.espresso.Espresso;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.crypticcoder.cleanarchitecture.data.CreateListener;
@@ -12,12 +10,7 @@ import com.crypticcoder.cleanarchitecture.data.DataListListener;
 import com.crypticcoder.cleanarchitecture.data.DataListener;
 import com.crypticcoder.cleanarchitecture.data.DeleteListener;
 import com.crypticcoder.cleanarchitecture.data.UpdateListener;
-import com.crypticcoder.cleanarchitecture.data.book.BookCacheDataSource;
-import com.crypticcoder.cleanarchitecture.data.book.BookLocalDataSource;
-import com.crypticcoder.cleanarchitecture.data.book.BookRemoteDataSource;
 import com.crypticcoder.cleanarchitecture.data.book.BookRepository;
-import com.crypticcoder.cleanarchitecture.data.di.BookRepositoryModule;
-import com.crypticcoder.cleanarchitecture.di.AppModule;
 import com.crypticcoder.cleanarchitecture.domain.model.Book;
 import com.crypticcoder.cleanarchitecture.domain.model.BookListFilter;
 
@@ -28,8 +21,6 @@ import org.junit.runner.RunWith;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

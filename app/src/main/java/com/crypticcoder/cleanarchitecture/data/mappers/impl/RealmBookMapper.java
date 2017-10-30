@@ -4,11 +4,19 @@ import com.crypticcoder.cleanarchitecture.data.mappers.RealmObjectMapper;
 import com.crypticcoder.cleanarchitecture.data.models.RealmBook;
 import com.crypticcoder.cleanarchitecture.domain.model.Book;
 
+import javax.inject.Inject;
+
 /**
  * Created by Cryptic Coder on 26,October,2017
  */
 
 public class RealmBookMapper implements RealmObjectMapper<RealmBook, Book> {
+
+    @Inject
+    public RealmBookMapper() {
+
+    }
+
     @Override
     public RealmBook toRealmObject(Book object) {
         RealmBook realmBook = new RealmBook();

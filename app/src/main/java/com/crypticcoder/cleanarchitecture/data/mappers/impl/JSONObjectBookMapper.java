@@ -17,6 +17,8 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
+import javax.inject.Inject;
+
 /**
  * Created by Cryptic Coder on 26,October,2017
  */
@@ -24,6 +26,11 @@ import java.util.Locale;
 public class JSONObjectBookMapper implements JSONObjectMapper<JSONObject, Book> {
 
     final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+
+    @Inject
+    public JSONObjectBookMapper() {
+
+    }
 
     @Override
     public JSONObject toJSONObject(Book obj) {

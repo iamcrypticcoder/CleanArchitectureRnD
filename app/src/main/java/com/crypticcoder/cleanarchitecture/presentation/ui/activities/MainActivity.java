@@ -13,7 +13,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity
-        implements BookDetailFragment.OnHeadlineSelectedListener{
+        implements BookListFragment.OnHeadlineSelectedListener{
 
     @BindView(R.id.fragment_container) FrameLayout mFrameLayout;
 
@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity
             }
 
             // Create a new Fragment to be placed in the activity layout
-            BookDetailFragment firstFragment = new BookDetailFragment();
+            BookListFragment firstFragment = new BookListFragment();
 
             // In case this activity was started with special instructions from an
             // Intent, pass the Intent's extras to the fragment as arguments
@@ -42,25 +42,25 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onArticleSelected(int position) {
-        // The user selected the headline of an article from the BookDetailFragment
+        // The user selected the headline of an article from the BookListFragment
 
         // Capture the article fragment from the activity layout
-        BookListFragment articleFrag = (BookListFragment)
+        BookDetailFragment articleFrag = (BookDetailFragment)
                 getSupportFragmentManager().findFragmentById(R.id.article_fragment);
 
         if (articleFrag != null) {
             // If article frag is available, we're in two-pane layout...
 
-            // Call a method in the BookListFragment to update its content
+            // Call a method in the BookDetailFragment to update its content
             articleFrag.updateArticleView(position);
 
         } else {
             // If the frag is not available, we're in the one-pane layout and must swap frags...
 
             // Create fragment and give it an argument for the selected article
-            BookListFragment newFragment = new BookListFragment();
+            BookDetailFragment newFragment = new BookDetailFragment();
             Bundle args = new Bundle();
-            args.putInt(BookListFragment.ARG_POSITION, position);
+            args.putInt(BookDetailFragment.ARG_POSITION, position);
             newFragment.setArguments(args);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 

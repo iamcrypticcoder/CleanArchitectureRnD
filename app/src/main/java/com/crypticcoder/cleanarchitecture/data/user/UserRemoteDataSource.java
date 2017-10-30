@@ -9,8 +9,15 @@ import com.crypticcoder.cleanarchitecture.data.DataListListener;
 import com.crypticcoder.cleanarchitecture.data.DataListener;
 import com.crypticcoder.cleanarchitecture.data.DeleteListener;
 import com.crypticcoder.cleanarchitecture.data.UpdateListener;
+import com.crypticcoder.cleanarchitecture.data.mappers.JSONObjectMapper;
+import com.crypticcoder.cleanarchitecture.data.mappers.impl.JSONObjectUserMapper;
 import com.crypticcoder.cleanarchitecture.domain.model.User;
 import com.crypticcoder.cleanarchitecture.domain.model.UserListFilter;
+
+import org.json.JSONObject;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * Created by Cryptic Coder on 28,October,2017
@@ -20,8 +27,13 @@ public class UserRemoteDataSource implements UserDataSource {
 
     private Context mContext;
 
-    public UserRemoteDataSource(@NonNull Context context) {
+    private JSONObjectMapper<JSONObject, User> mJSONMapper;
+
+    @Inject
+    public UserRemoteDataSource(@NonNull Context context,
+                                @Named("JSONObjectUserMapper") @NonNull JSONObjectMapper<JSONObject, User> mapper) {
         mContext = context;
+        mJSONMapper = mapper;
     }
 
     @Override

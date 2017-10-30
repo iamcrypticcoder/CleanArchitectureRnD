@@ -9,6 +9,7 @@ import com.crypticcoder.cleanarchitecture.domain.interactors.RemoveBookInteracto
 import com.crypticcoder.cleanarchitecture.domain.interactors.impl.GetBookListInteractorImpl;
 import com.crypticcoder.cleanarchitecture.domain.model.Book;
 import com.crypticcoder.cleanarchitecture.domain.model.BookListFilter;
+import com.crypticcoder.cleanarchitecture.presentation.presenters.DetailBookPresenter;
 import com.crypticcoder.cleanarchitecture.presentation.presenters.base.AbstractPresenter;
 import com.crypticcoder.cleanarchitecture.presentation.presenters.BookListPresenter;
 
@@ -22,73 +23,99 @@ import javax.inject.Inject;
 
 public class BookListPresenterImpl extends AbstractPresenter implements BookListPresenter {
 
-    private View mView;
+    private BookListPresenter.View mView;
 
-    @Inject GetBookListInteractor mGetBookListInteractor;
-    @Inject AddBookInteractor mAddBookInteractor;
-    @Inject RemoveBookInteractor mRemoveBookInteractor;
+    private GetBookListInteractor mGetBookListInteractor;
+    private AddBookInteractor mAddBookInteractor;
+    private RemoveBookInteractor mRemoveBookInteractor;
+
+    private BookListFilter mBookListFilter;
 
     @Inject
-    public BookListPresenterImpl(Executor executor, MainThread mainThread) {
+    public BookListPresenterImpl(Executor executor,
+                                 MainThread mainThread,
+                                 GetBookListInteractor bookListInteractor,
+                                 AddBookInteractor addBookInteractor,
+                                 RemoveBookInteractor removeBookInteractor) {
         super(executor, mainThread);
-        //mGetBookListInteractor = new GetBookListInteractorImpl(executor, mainThread, );
+        mGetBookListInteractor = bookListInteractor;
+        mAddBookInteractor = addBookInteractor;
+        mRemoveBookInteractor = removeBookInteractor;
 
+        mBookListFilter = new BookListFilter();
     }
 
     @Override
-    public void setView(View view) {
-        mView = view;
+    public BookListFilter getBookListFilter() {
+        return mBookListFilter;
     }
 
     @Override
-    public void fetchBookList(BookListFilter bookListFilter) {
-        mGetBookListInteractor.setBookListFilter(bookListFilter);
+    public void setBookListFilter(BookListFilter filter) {
+        mBookListFilter = filter;
+    }
+
+    @Override
+    public void loadBookList() {
+        mGetBookListInteractor.setBookListFilter(mBookListFilter);
         mGetBookListInteractor.setCallback(new GetBookListInteractor.Callback() {
             @Override
             public void onSuccess(List<Book> bookList) {
-                mView.onBookListFetched(bookList);
+                mView.showBookList(bookList);
             }
 
             @Override
             public void onFailed() {
-                mView.onBookListFetched(null);
+                mView.showBookList(null);
             }
         });
         mGetBookListInteractor.execute();
     }
 
     @Override
-    public void addBook(Book book) {
-        mAddBookInteractor.setBook(book);
-        mAddBookInteractor.setCallback(new AddBookInteractor.Callback() {
-            @Override
-            public void onSuccess(Book book) {
-                mView.onBookAdded(book);
-            }
+    public void loadPreviousBookList() {
 
-            @Override
-            public void onFailed() {
-                mView.onBookAdded(null);
-            }
-        });
-        mAddBookInteractor.execute();
     }
 
+    @Override
+    public void loadRecentBookList() {
+
+    }
+    @Override
+    public void openAddNewBook() {
+
+    }
+    
     @Override
     public void removeBook(Book book) {
         mRemoveBookInteractor.setBookId(book.getId());
         mRemoveBookInteractor.setCallback(new RemoveBookInteractor.Callback() {
             @Override
             public void onSuccess() {
-                mView.onBookRemoved(true);
+
             }
 
             @Override
             public void onFailed() {
-                mView.onBookRemoved(false);
+
             }
         });
         mRemoveBookInteractor.execute();
+    }
+
+    @Override
+    public void openBookDetail(Book book) {
+
+    }
+
+    @Override
+    public void takeView(BookListPresenter.View view) {
+        mView = view;
+    }
+
+    @Override
+    public void dropView() {
+        mView = null;
     }
 
 }
