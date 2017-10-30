@@ -26,15 +26,17 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    // Gson library
-    // Link: https://github.com/google/gson
+    // Gson
     compile 'com.google.code.gson:gson:2.8.2'
 
     // Enable Multidex for Apps with Over 64K Methods
     // Link: https://developer.android.com/studio/build/multidex.html
     compile 'com.android.support:multidex:1.0.1'
-
+    
+    // Android support library
     compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:support-v4:25.1.0'
+    compile 'com.android.support:design:25.1.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -42,7 +44,10 @@ dependencies {
     })
     testCompile 'junit:junit:4.12'
 
-    // Dagger 2 dependencies
+    // Google play service
+    compile 'com.google.android.gms:play-services:9.8.0'
+
+    // Dagger 2
     compile 'com.google.dagger:dagger:2.11'
     compile 'com.google.dagger:dagger-android:2.11'
     annotationProcessor 'com.google.dagger:dagger-android-processor:2.11'
@@ -51,4 +56,16 @@ dependencies {
     // Bufferknife
     compile 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
+    // App Intro
+    compile 'com.github.paolorotolo:appintro:4.0.0'
+
+    // Picasso
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
+    // Glide
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+
+    // Imgix library
+    compile 'com.imgix:imgix-java:1.1.8'
 }
