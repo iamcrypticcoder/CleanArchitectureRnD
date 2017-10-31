@@ -35,6 +35,88 @@ public class DetailBookPresenterImpl extends AbstractPresenter implements Detail
     }
 
     @Override
+    public void onCreateView() {
+
+    }
+
+    @Override
+    public void onStart() {
+        mView.showOnlyProgressBar();
+        mViewBookInteractor.setBookId(mBookId);
+        mViewBookInteractor.setCallback(new ViewBookInteractor.Callback() {
+            @Override
+            public void onSuccess(Book book) {
+                mView.hideProgressBar();
+                mView.populateBook(book);
+            }
+
+            @Override
+            public void onFailed() {
+                mView.hideProgressBar();
+                mView.showToast("Unable to load book");
+            }
+        });
+        mViewBookInteractor.execute();
+    }
+
+    @Override
+    public void onResume() {
+
+    }
+
+    @Override
+    public void onPause() {
+
+    }
+
+    @Override
+    public void onStop() {
+
+    }
+
+    @Override
+    public void setBook(Long id) {
+        mBookId = id;
+    }
+
+    @Override
+    public void setBook(Book book) {
+
+    }
+
+    @Override
+    public void getBook() {
+
+    }
+
+    @Override
+    public void markAsReadUnread(boolean status) {
+
+    }
+
+    @Override
+    public void editBook() {
+
+    }
+
+    @Override
+    public void deleteBook() {
+        mRemoveBookInteractor.setBookId(mBookId);
+        mRemoveBookInteractor.setCallback(new RemoveBookInteractor.Callback() {
+            @Override
+            public void onSuccess() {
+                mView.showToast("Book deleted");
+            }
+
+            @Override
+            public void onFailed() {
+                mView.showToast("Unable to delete book");
+            }
+        });
+    }
+
+    /*
+    @Override
     public void setBookId(Long bookId) {
         mBookId = bookId;
     }
@@ -79,6 +161,8 @@ public class DetailBookPresenterImpl extends AbstractPresenter implements Detail
             }
         });
     }
+
+    */
 
     @Override
     public void takeView(View view) {

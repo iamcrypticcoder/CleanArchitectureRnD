@@ -5,5 +5,9 @@ package com.crypticcoder.cleanarchitecture.presentation.presenters.base;
  */
 
 public interface BaseFragmentPresenter extends BasePresenter {
-
+    void onCreateView();
+    void onStart();
+    void onResume();
+    void onPause();
+    void onStop();
 }

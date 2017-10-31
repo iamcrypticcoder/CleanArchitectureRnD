@@ -1,0 +1,47 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.crypticcoder.cleanarchitecture.presentation.ui.activities.MainActivity"
+    android:background="@color/color11">
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.crypticcoder.cleanarchitecture.presentation.ui.widgets.collected.observablescrollview.ObservableListView
+            android:id="@+id/book_listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:clipToPadding="false"
+            android:divider="@color/transparent"
+            android:dividerHeight="10dp"
+            android:scrollbarSize="2dp"
+            android:scrollbarStyle="outsideInset"
+            android:scrollbarThumbVertical="@color/color3"
+            android:listSelector="@android:color/transparent"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <ProgressBar
+        android:id="@+id/progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminateDrawable="@xml/progress_bar_blue"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/listview_empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="No data to display"
+        android:gravity="center_horizontal"/>
+
+</RelativeLayout>

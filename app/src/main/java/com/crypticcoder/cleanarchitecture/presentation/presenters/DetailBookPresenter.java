@@ -10,16 +10,20 @@ import com.crypticcoder.cleanarchitecture.presentation.ui.BaseView;
 
 public interface DetailBookPresenter extends BaseFragmentPresenter {
     interface View extends BaseView {
-        void showLoadingIndicator();
-        void hideLoadingIndicator();
-        void showBook(Book book);
+        void populateBook(Book book);
+        void showOnlyProgressBar();
+        void hideProgressBar();
         void showToast(String message);
+        void nagivateToEditBookView(Book book);
     }
 
-    void setBookId(Long id);
-    void loadBook();
+    void setBook(Long id);
+    void setBook(Book book);
+    void getBook();
+
     void markAsReadUnread(boolean status);
-    void removeBook();
+    void editBook();
+    void deleteBook();
 
     void takeView(View view);
     void dropView();

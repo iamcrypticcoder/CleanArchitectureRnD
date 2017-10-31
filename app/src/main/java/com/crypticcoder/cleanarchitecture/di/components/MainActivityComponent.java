@@ -6,6 +6,7 @@ import com.crypticcoder.cleanarchitecture.di.modules.MainActivityModule;
 import com.crypticcoder.cleanarchitecture.presentation.ui.activities.MainActivity;
 import com.crypticcoder.cleanarchitecture.presentation.ui.fragments.BookListFragment;
 import com.crypticcoder.cleanarchitecture.presentation.ui.fragments.BookDetailFragment;
+import com.crypticcoder.cleanarchitecture.presentation.ui.fragments.BookListFragmentNew;
 
 import dagger.Subcomponent;
 
@@ -19,4 +20,6 @@ public interface MainActivityComponent {
     void inject(MainActivity activity);
     void inject(BookDetailFragment fragment);
     void inject(BookListFragment fragment);
+
+    void inject(BookListFragmentNew fragment);
 }

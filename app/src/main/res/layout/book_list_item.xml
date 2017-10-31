@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:id="@+id/book_list_item"
+    android:clickable="true">
+
+    <TextView
+        android:id="@+id/book_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:paddingTop="10dp"
+        android:gravity="top|left"
+        android:text="The Goose with the Golden Eggs. The Goose with the Golden Eggs."
+        android:textColor="@color/color5"
+        android:textSize="18sp"
+        android:fontFamily="sans-serif-light"/>
+
+    <TextView
+        android:id="@+id/delete_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/book_title"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:padding="6dp"
+        android:text="DELETE"
+        android:textStyle="bold"
+        android:textColor="@color/rating_star_5"
+        android:textSize="14sp"/>
+
+    <TextView
+        android:id="@+id/edit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/book_title"
+        android:layout_toLeftOf="@id/delete_button"
+        android:layout_marginRight="10dp"
+        android:padding="6dp"
+        android:text="EDIT"
+        android:textColor="@color/deep_blue"
+        android:textStyle="bold"
+        android:textSize="14sp"/>
+
+</RelativeLayout>

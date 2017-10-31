@@ -35,7 +35,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class BookListFragment extends ListFragment implements BookListPresenter.View {
+public class BookListFragment extends ListFragment {
     OnHeadlineSelectedListener mCallback;
 
     @Inject BookListPresenter mBookListPresenter;
@@ -94,23 +94,4 @@ public class BookListFragment extends ListFragment implements BookListPresenter.
         getListView().setItemChecked(position, true);
     }
 
-    @Override
-    public void showBookList(List<Book> bookList) {
-
-    }
-
-    @Override
-    public void prependBookList(List<Book> bookList) {
-
-    }
-
-    @Override
-    public void appendBookList(List<Book> bookList) {
-
-    }
-
-    @Override
-    public void showToast(String message) {
-
-    }
 }

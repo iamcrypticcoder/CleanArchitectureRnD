@@ -13,6 +13,7 @@ import com.crypticcoder.cleanarchitecture.presentation.presenters.DetailBookPres
 import com.crypticcoder.cleanarchitecture.presentation.presenters.base.AbstractPresenter;
 import com.crypticcoder.cleanarchitecture.presentation.presenters.BookListPresenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -29,6 +30,7 @@ public class BookListPresenterImpl extends AbstractPresenter implements BookList
     private AddBookInteractor mAddBookInteractor;
     private RemoveBookInteractor mRemoveBookInteractor;
 
+    private List<Book> mBookList;
     private BookListFilter mBookListFilter;
 
     @Inject
@@ -42,7 +44,39 @@ public class BookListPresenterImpl extends AbstractPresenter implements BookList
         mAddBookInteractor = addBookInteractor;
         mRemoveBookInteractor = removeBookInteractor;
 
+        mBookList = new ArrayList<>();
         mBookListFilter = new BookListFilter();
+    }
+
+
+    @Override
+    public void onCreateView() {
+
+    }
+
+    @Override
+    public void onStart() {
+
+    }
+
+    @Override
+    public void onResume() {
+
+    }
+
+    @Override
+    public void onPause() {
+
+    }
+
+    @Override
+    public void onStop() {
+
+    }
+
+    @Override
+    public List<Book> getBookList() {
+        return mBookList;
     }
 
     @Override
@@ -51,60 +85,22 @@ public class BookListPresenterImpl extends AbstractPresenter implements BookList
     }
 
     @Override
-    public void setBookListFilter(BookListFilter filter) {
-        mBookListFilter = filter;
+    public void loadRecentBooks() {
+        mView.refreshBookList();
     }
 
     @Override
-    public void loadBookList() {
-        mGetBookListInteractor.setBookListFilter(mBookListFilter);
-        mGetBookListInteractor.setCallback(new GetBookListInteractor.Callback() {
-            @Override
-            public void onSuccess(List<Book> bookList) {
-                mView.showBookList(bookList);
-            }
-
-            @Override
-            public void onFailed() {
-                mView.showBookList(null);
-            }
-        });
-        mGetBookListInteractor.execute();
+    public void loadPreviousBooks() {
+        mView.refreshBookList();
     }
 
     @Override
-    public void loadPreviousBookList() {
-
+    public void editBook(int position) {
+        mView.nagivateToEditBookView(mBookList.get(position));
     }
 
     @Override
-    public void loadRecentBookList() {
-
-    }
-    @Override
-    public void openAddNewBook() {
-
-    }
-    
-    @Override
-    public void removeBook(Book book) {
-        mRemoveBookInteractor.setBookId(book.getId());
-        mRemoveBookInteractor.setCallback(new RemoveBookInteractor.Callback() {
-            @Override
-            public void onSuccess() {
-
-            }
-
-            @Override
-            public void onFailed() {
-
-            }
-        });
-        mRemoveBookInteractor.execute();
-    }
-
-    @Override
-    public void openBookDetail(Book book) {
+    public void deleteBook(int position) {
 
     }
 
