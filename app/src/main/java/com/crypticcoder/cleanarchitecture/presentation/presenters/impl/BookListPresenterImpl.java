@@ -18,11 +18,15 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.crypticcoder.cleanarchitecture.util.LogUtil.LOGD;
+import static com.crypticcoder.cleanarchitecture.util.LogUtil.makeLogTag;
+
 /**
  * Created by Cryptic Coder on 29,October,2017
  */
 
 public class BookListPresenterImpl extends AbstractPresenter implements BookListPresenter {
+    public static final String DEBUG_TAG = makeLogTag(BookListPresenterImpl.class);
 
     private BookListPresenter.View mView;
 
@@ -86,7 +90,26 @@ public class BookListPresenterImpl extends AbstractPresenter implements BookList
 
     @Override
     public void loadRecentBooks() {
-        mView.refreshBookList();
+        LOGD(DEBUG_TAG, "loadRecentBooks()");
+
+        mView.showOnlyProgressBar();
+        mGetBookListInteractor.setBookListFilter(mBookListFilter);
+        mGetBookListInteractor.setCallback(new GetBookListInteractor.Callback() {
+            @Override
+            public void onSuccess(List<Book> bookList) {
+                mBookList.addAll(0, bookList);
+                mView.hideProgressBar();
+                mView.showListView();
+                mView.refreshBookList();
+            }
+
+            @Override
+            public void onFailed() {
+                mView.showListView();
+                mView.showToast("Unable to fetch");
+            }
+        });
+        mGetBookListInteractor.execute();
     }
 
     @Override
@@ -100,8 +123,21 @@ public class BookListPresenterImpl extends AbstractPresenter implements BookList
     }
 
     @Override
-    public void deleteBook(int position) {
+    public void deleteBook(final int position) {
+        mRemoveBookInteractor.setBookId(mBookList.get(position).getId());
+        mRemoveBookInteractor.setCallback(new RemoveBookInteractor.Callback() {
+            @Override
+            public void onSuccess() {
+                mBookList.remove(position);
+                mView.refreshBookList();
+            }
 
+            @Override
+            public void onFailed() {
+                mView.showToast("Unable to delete book");
+            }
+        });
+        mRemoveBookInteractor.execute();
     }
 
     @Override

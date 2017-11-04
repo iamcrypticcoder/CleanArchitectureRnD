@@ -73,35 +73,35 @@ public class BookDemoData {
             JSONObject obj = new JSONObject();
             obj.put("id", 1L);
             obj.put("title", "War and Peace");
-            obj.put("authors", "[Leo Tolstoy]");
+            obj.put("authors", new JSONArray().put(0, "Leo Tolstoy"));
             obj.put("publishedDate", new Date().getTime());
             bookDb.put(0L, obj);
 
             obj = new JSONObject();
             obj.put("id", 2L);
             obj.put("title", "Hamlet");
-            obj.put("authors", "[William Shakespeare]");
+            obj.put("authors", new JSONArray().put(0, "William Shakespeare"));
             obj.put("publishedDate", new Date().getTime());
             bookDb.put(1L, obj);
 
             obj = new JSONObject();
             obj.put("id", 3L);
             obj.put("title", "Pride and Prejudice");
-            obj.put("authors", "[Jane Austen]");
+            obj.put("authors", new JSONArray().put(0, "Jane Austen"));
             obj.put("publishedDate", new Date().getTime());
             bookDb.put(2L, obj);
 
             obj = new JSONObject();
             obj.put("id", 3L);
             obj.put("title", "Anna Karenina");
-            obj.put("authors", "[Leo Tolstoy]");
+            obj.put("authors", new JSONArray().put(0, "Leo Tolstoy"));
             obj.put("publishedDate", new Date().getTime());
             bookDb.put(3L, obj);
 
             obj = new JSONObject();
             obj.put("id", 3L);
             obj.put("title", "Gulliver's Travels");
-            obj.put("authors", "[Jonathan Swift]");
+            obj.put("authors", new JSONArray().put(0, "Jonathan Swift"));
             obj.put("publishedDate", new Date().getTime());
             bookDb.put(4L, obj);
 

@@ -8,12 +8,12 @@ import android.widget.FrameLayout;
 import com.crypticcoder.cleanarchitecture.R;
 import com.crypticcoder.cleanarchitecture.presentation.ui.fragments.BookDetailFragment;
 import com.crypticcoder.cleanarchitecture.presentation.ui.fragments.BookListFragment;
+import com.crypticcoder.cleanarchitecture.presentation.ui.fragments.BookListFragmentNew;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity
-        implements BookListFragment.OnHeadlineSelectedListener{
+public class MainActivity extends AppCompatActivity /* implements BookListFragmentNew.OnHeadlineSelectedListener */ {
 
     @BindView(R.id.fragment_container) FrameLayout mFrameLayout;
 
@@ -28,19 +28,16 @@ public class MainActivity extends AppCompatActivity
                 return;
             }
 
-            // Create a new Fragment to be placed in the activity layout
-            BookListFragment firstFragment = new BookListFragment();
+            BookListFragmentNew firstFragment = new BookListFragmentNew();
 
-            // In case this activity was started with special instructions from an
-            // Intent, pass the Intent's extras to the fragment as arguments
             firstFragment.setArguments(getIntent().getExtras());
 
-            // Add the fragment to the 'fragment_container' FrameLayout
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, firstFragment).commit();
         }
     }
 
+    /*
     public void onArticleSelected(int position) {
         // The user selected the headline of an article from the BookListFragment
 
@@ -73,4 +70,5 @@ public class MainActivity extends AppCompatActivity
             transaction.commit();
         }
     }
+    */
 }

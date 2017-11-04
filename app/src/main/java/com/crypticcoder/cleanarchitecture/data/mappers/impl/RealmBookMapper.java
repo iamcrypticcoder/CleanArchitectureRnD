@@ -32,7 +32,7 @@ public class RealmBookMapper implements RealmObjectMapper<RealmBook, Book> {
         Book book = new Book();
         book.setId(object.id);
         book.setTitle(object.title);
-        book.setAuthors(object.authors);
+        //book.setAuthors(object.authors);
         book.setPublishedDate(object.publishedDate);
         return book;
     }

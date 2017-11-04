@@ -1,12 +1,14 @@
 package com.crypticcoder.cleanarchitecture.presentation.ui.fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,12 +33,17 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 import static com.crypticcoder.cleanarchitecture.util.LogUtil.LOGD;
 import static com.crypticcoder.cleanarchitecture.util.LogUtil.makeLogTag;
 
 public class BookListFragmentNew extends Fragment implements BookListPresenter.View {
     public static final String DEBUG_TAG = makeLogTag(BookListFragmentNew.class);
+
+    public interface OnHeadlineSelectedListener {
+        void onArticleSelected(int position);
+    }
 
     //region Properties
 
@@ -56,9 +63,14 @@ public class BookListFragmentNew extends Fragment implements BookListPresenter.V
     private ViewHolder mViewHolder;
 
     /**
+     *
+     */
+    private Unbinder mButterKnifeUnbinder;
+
+    /**
      * Book List
      */
-    private List<Book> mBookList;
+    private List<Book> bookList;
     private BookListAdapter mBookListAdapter;
 
     /**
@@ -100,7 +112,12 @@ public class BookListFragmentNew extends Fragment implements BookListPresenter.V
 
         // Init ViewHolder
         mViewHolder = new ViewHolder();
-        ButterKnife.bind(mViewHolder, mFragmentView);
+        mButterKnifeUnbinder = ButterKnife.bind(mViewHolder, mFragmentView);
+
+        initListView();
+
+        mBookListPresenter.takeView(this);
+
 
         return mFragmentView;
     }
@@ -116,6 +133,13 @@ public class BookListFragmentNew extends Fragment implements BookListPresenter.V
         LOGD(DEBUG_TAG, "onStart()");
         super.onStart();
         mBookListPresenter.loadRecentBooks();
+        /*
+        Book book = new Book();
+        book.setId(1L);
+        book.setTitle("XXX");
+        mBookListPresenter.getBookList().add(book);
+        mBookListAdapter.notifyDataSetChanged();
+        */
     }
 
     @Override
@@ -149,6 +173,8 @@ public class BookListFragmentNew extends Fragment implements BookListPresenter.V
     public void onDestroy() {
         LOGD(DEBUG_TAG, "onDestroy()");
         super.onDestroy();
+        mButterKnifeUnbinder.unbind();
+        mBookListPresenter.dropView();
     }
 
     @Override
@@ -160,6 +186,7 @@ public class BookListFragmentNew extends Fragment implements BookListPresenter.V
     private void initListView() {
         mBookListAdapter = new BookListAdapter(mParentActivity.getApplication(), mBookListPresenter.getBookList(), mParentActivity.getLayoutInflater());
         mViewHolder.bookListView.setAdapter(mBookListAdapter);
+        mViewHolder.bookListView.setEmptyView(mViewHolder.listViewEmptyView);
 
         mBookListAdapter.setItemOnClickListener(new BookListAdapter.ItemOnClickListener() {
             @Override
@@ -173,15 +200,24 @@ public class BookListFragmentNew extends Fragment implements BookListPresenter.V
             }
 
             @Override
-            public void onItemDeleteClick(TextView textView, int position) {
-                mBookListPresenter.deleteBook(position);
+            public void onItemDeleteClick(TextView textView, final int position) {
+                new AlertDialog.Builder(mParentActivity)
+                        .setTitle("Confirm")
+                        .setMessage("Do you really delete the book?")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mBookListPresenter.deleteBook(position);
+                            }
+                        }).show();
             }
         });
 
         mViewHolder.bookListView.setOnScrollListener(new InfiniteScrollListener(0) {
             @Override
             public void loadMore(int page, int totalItemsCount) {
-                mBookListPresenter.loadPreviousBooks();
+                //mBookListPresenter.loadPreviousBooks();
             }
         });
     }
@@ -198,10 +234,17 @@ public class BookListFragmentNew extends Fragment implements BookListPresenter.V
     public void showOnlyProgressBar() {
         mViewHolder.progressBar.setVisibility(View.VISIBLE);
         mViewHolder.swipeRefreshLayout.setVisibility(View.GONE);
+        mViewHolder.listViewEmptyView.setVisibility(View.INVISIBLE);
     }
+
     @Override
     public void hideProgressBar() {
         mViewHolder.progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showListView() {
+        mViewHolder.swipeRefreshLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -211,9 +254,8 @@ public class BookListFragmentNew extends Fragment implements BookListPresenter.V
 
     @Override
     public void nagivateToEditBookView(Book book) {
-
+        Toast.makeText(mParentActivity, "Go to edit book activity", Toast.LENGTH_SHORT).show();
     }
-
 
     //endregion
 

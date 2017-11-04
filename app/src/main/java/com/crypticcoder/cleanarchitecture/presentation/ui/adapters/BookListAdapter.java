@@ -66,8 +66,8 @@ public class BookListAdapter extends BaseAdapter {
         final ViewHolder holder;
         if(null == convertView) {
             convertView = layoutInflater.inflate(R.layout.book_list_item, null);
-            holder = new ViewHolder();
-            ButterKnife.bind(holder, convertView);
+            holder = new ViewHolder(convertView);
+            convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
@@ -97,6 +97,10 @@ public class BookListAdapter extends BaseAdapter {
         @BindView(R.id.book_title) TextView bookTitle;
         @BindView(R.id.edit_button) TextView editButton;
         @BindView(R.id.delete_button) TextView deleteButton;
+
+        public ViewHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
     }
 
     public void setItemOnClickListener(ItemOnClickListener itemOnClickListener) {

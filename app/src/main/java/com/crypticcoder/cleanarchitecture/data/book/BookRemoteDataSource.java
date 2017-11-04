@@ -113,6 +113,11 @@ public class BookRemoteDataSource implements BookDataSource {
 
     @Override
     public void getBook(@NonNull Long bookId, @NonNull DataListener<Book> dataListener) {
+        // Simulation of 1 second delay
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {}
+
         JSONObject jsonObject = BookDemoData.remoteApi_getBook(bookId);
         Book book = mJSONMapper.toDomainObject(jsonObject);
         if(null == book) {
@@ -124,6 +129,11 @@ public class BookRemoteDataSource implements BookDataSource {
 
     @Override
     public void getBookList(@Nullable BookListFilter bookListFilter, @NonNull DataListListener<Book> dataListListener) {
+        // Simulation of 1 second delay
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {}
+
         // TODO: Send book list filter info to server. For simplicity this part is omitted.
         JSONObject jsonObject = BookDemoData.remoteApi_getBookList();
         int count = jsonObject.optInt("count");

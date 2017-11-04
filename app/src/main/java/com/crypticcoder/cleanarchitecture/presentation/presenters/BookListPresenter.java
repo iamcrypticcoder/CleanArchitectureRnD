@@ -16,6 +16,7 @@ public interface BookListPresenter extends BaseFragmentPresenter {
         void refreshBookList();
         void showOnlyProgressBar();
         void hideProgressBar();
+        void showListView();
         void showToast(String message);
         void nagivateToEditBookView(Book book);
     }
