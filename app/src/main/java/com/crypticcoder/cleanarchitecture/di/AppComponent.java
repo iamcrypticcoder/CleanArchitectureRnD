@@ -30,7 +30,7 @@ import dagger.Component;
 })
 public interface AppComponent {
 
-    MainActivityComponent plus(InteractorModule interactorModule, MainActivityModule mainActivityModule);
+    MainActivityComponent plus(MainActivityModule mainActivityModule);
 
     // Exposed for parent component that will use this comp as dependency
     /*

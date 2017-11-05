@@ -18,8 +18,8 @@ public interface DetailBookPresenter extends BaseFragmentPresenter {
     }
 
     void setBook(Long id);
-    void setBook(Book book);
-    void getBook();
+    //void setBook(Book book);
+    void loadBookDetail();
 
     void markAsReadUnread(boolean status);
     void editBook();

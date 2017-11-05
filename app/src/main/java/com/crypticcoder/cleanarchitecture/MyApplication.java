@@ -5,7 +5,10 @@ import android.support.multidex.MultiDexApplication;
 
 import com.crypticcoder.cleanarchitecture.di.AppComponent;
 import com.crypticcoder.cleanarchitecture.di.DaggerAppComponent;
+import com.crypticcoder.cleanarchitecture.di.components.MainActivityComponent;
 import com.crypticcoder.cleanarchitecture.di.modules.AppModule;
+import com.crypticcoder.cleanarchitecture.di.modules.InteractorModule;
+import com.crypticcoder.cleanarchitecture.di.modules.MainActivityModule;
 import com.crypticcoder.cleanarchitecture.di.modules.UtilModule;
 
 import io.realm.Realm;
@@ -21,6 +24,7 @@ public class MyApplication extends MultiDexApplication {
     private static Context context;
 
     private AppComponent mAppComponent;
+    private MainActivityComponent mMainActivityComponent;
 
     @Override
     public void onCreate() {
@@ -66,5 +70,18 @@ public class MyApplication extends MultiDexApplication {
 
     public AppComponent getAppComponent() {
         return mAppComponent;
+    }
+
+    public MainActivityComponent createMainActivityComponent() {
+        mMainActivityComponent = mAppComponent.plus(new MainActivityModule());
+        return mMainActivityComponent;
+    }
+
+    public MainActivityComponent getMainActivityComponent() {
+        return mMainActivityComponent;
+    }
+
+    public void releaseMainActivityComponent() {
+        mMainActivityComponent = null;
     }
 }

@@ -76,6 +76,13 @@ public class BookListAdapter extends BaseAdapter {
 
         holder.bookTitle.setText(book.getTitle());
 
+        holder.bookTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mItemOnClickListener.onItemClick(position);
+            }
+        });
+
         holder.editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

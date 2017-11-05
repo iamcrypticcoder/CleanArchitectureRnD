@@ -23,6 +23,7 @@ public class DetailBookPresenterImpl extends AbstractPresenter implements Detail
     private RemoveBookInteractor mRemoveBookInteractor;
 
     private Long mBookId;
+    private Book mBook;
 
     @Inject
     public DetailBookPresenterImpl(@NonNull Executor executor,
@@ -46,6 +47,7 @@ public class DetailBookPresenterImpl extends AbstractPresenter implements Detail
         mViewBookInteractor.setCallback(new ViewBookInteractor.Callback() {
             @Override
             public void onSuccess(Book book) {
+                mBook = book;
                 mView.hideProgressBar();
                 mView.populateBook(book);
             }
@@ -80,13 +82,20 @@ public class DetailBookPresenterImpl extends AbstractPresenter implements Detail
     }
 
     @Override
-    public void setBook(Book book) {
+    public void loadBookDetail() {
+        mViewBookInteractor.setBookId(mBookId);
+        mViewBookInteractor.setCallback(new ViewBookInteractor.Callback() {
+            @Override
+            public void onSuccess(Book book) {
+                mView.populateBook(book);
+            }
 
-    }
-
-    @Override
-    public void getBook() {
-
+            @Override
+            public void onFailed() {
+                mView.showToast("Unable to load book");
+            }
+        });
+        mViewBookInteractor.execute();
     }
 
     @Override
@@ -96,7 +105,7 @@ public class DetailBookPresenterImpl extends AbstractPresenter implements Detail
 
     @Override
     public void editBook() {
-
+        mView.nagivateToEditBookView(mBook);
     }
 
     @Override

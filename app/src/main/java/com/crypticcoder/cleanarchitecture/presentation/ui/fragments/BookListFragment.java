@@ -1,97 +1,267 @@
-/*
- * Copyright (C) 2012 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.crypticcoder.cleanarchitecture.presentation.ui.fragments;
 
-import android.app.Activity;
-import android.os.Build;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.crypticcoder.cleanarchitecture.MyApplication;
 import com.crypticcoder.cleanarchitecture.R;
-import com.crypticcoder.cleanarchitecture.di.modules.InteractorModule;
-import com.crypticcoder.cleanarchitecture.di.modules.MainActivityModule;
-import com.crypticcoder.cleanarchitecture.domain.interactors.ViewBookInteractor;
 import com.crypticcoder.cleanarchitecture.domain.model.Book;
 import com.crypticcoder.cleanarchitecture.presentation.presenters.BookListPresenter;
+import com.crypticcoder.cleanarchitecture.presentation.ui.adapters.BookListAdapter;
+import com.crypticcoder.cleanarchitecture.presentation.ui.widgets.collected.InfiniteScrollListener;
+import com.crypticcoder.cleanarchitecture.presentation.ui.widgets.collected.observablescrollview.ObservableListView;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-public class BookListFragment extends ListFragment {
-    OnHeadlineSelectedListener mCallback;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
+import static com.crypticcoder.cleanarchitecture.util.LogUtil.LOGD;
+import static com.crypticcoder.cleanarchitecture.util.LogUtil.makeLogTag;
+
+public class BookListFragment extends Fragment implements BookListPresenter.View {
+    public static final String DEBUG_TAG = makeLogTag(BookListFragment.class);
+
+    public interface OnBookSelectedListener {
+        void onBookSelected(Long bookId);
+    }
+
+    //region Properties
+
+    /**
+     * Context
+     */
+    private Context mContext;
+
+    /**
+     * Parent Activity
+     */
+    private FragmentActivity mParentActivity;
+
+    /**
+     * View Holder
+     */
+    private ViewHolder mViewHolder;
+
+    /**
+     *
+     */
+    private Unbinder mButterKnifeUnbinder;
+
+    /**
+     * Book List
+     */
+    private List<Book> bookList;
+    private BookListAdapter mBookListAdapter;
+
+    /**
+     * Presenter
+     */
     @Inject BookListPresenter mBookListPresenter;
 
-    public interface OnHeadlineSelectedListener {
-         void onArticleSelected(int position);
+    private OnBookSelectedListener mCallback;
+
+    //endregion
+
+    public BookListFragment() {
+        // Required empty public constructor
+        MyApplication.getApplication().getMainActivityComponent().inject(this);
+    }
+
+    public static BookListFragment newInstance() {
+        BookListFragment fragment = new BookListFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
 
-        MyApplication.getApplication().getAppComponent()
-                .plus(new InteractorModule(), new MainActivityModule())
-                .inject(this);
+        }
+    }
 
-        // We need to use a different list item layout for devices older than Honeycomb
-        int layout = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
-                android.R.layout.simple_list_item_activated_1 : android.R.layout.simple_list_item_1;
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View mFragmentView = inflater.inflate(R.layout.fragment_book_list, container, false);
 
-        // Create an array adapter for the list view, using the Ipsum headlines array
-        setListAdapter(new ArrayAdapter<String>(getActivity(), layout, Ipsum.Headlines));
+        mContext = getActivity();
+        mParentActivity = getActivity();
+
+        // Init ViewHolder
+        mViewHolder = new ViewHolder();
+        mButterKnifeUnbinder = ButterKnife.bind(mViewHolder, mFragmentView);
+
+        initListView();
+
+        mBookListPresenter.takeView(this);
+
+
+        return mFragmentView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
     public void onStart() {
+        LOGD(DEBUG_TAG, "onStart()");
         super.onStart();
-
-        // When in two-pane layout, set the listview to highlight the selected list item
-        // (We do this during onStart because at the point the listview is available.)
-        if (getFragmentManager().findFragmentById(R.id.article_fragment) != null) {
-            getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        }
+        mBookListPresenter.loadRecentBooks();
+        /*
+        Book book = new Book();
+        book.setId(1L);
+        book.setTitle("XXX");
+        mBookListPresenter.getBookList().add(book);
+        mBookListAdapter.notifyDataSetChanged();
+        */
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        // This makes sure that the container activity has implemented
-        // the callback interface. If not, it throws an exception.
-        try {
-            mCallback = (OnHeadlineSelectedListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnHeadlineSelectedListener");
-        }
+    public void onResume() {
+        LOGD(DEBUG_TAG, "onResume()");
+        super.onResume();
+        mBookListPresenter.onResume();
     }
 
     @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        // Notify the parent activity of selected item
-        mCallback.onArticleSelected(position);
-        
-        // Set the item as checked to be highlighted when in two-pane layout
-        getListView().setItemChecked(position, true);
+    public void onPause() {
+        LOGD(DEBUG_TAG, "onPause()");
+        super.onPause();
+        mBookListPresenter.onPause();
     }
 
+    @Override
+    public void onStop() {
+        LOGD(DEBUG_TAG, "onStop()");
+        super.onStop();
+        mBookListPresenter.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        LOGD(DEBUG_TAG, "onDestroyView()");
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        LOGD(DEBUG_TAG, "onDestroy()");
+        super.onDestroy();
+        mButterKnifeUnbinder.unbind();
+        mBookListPresenter.dropView();
+    }
+
+    @Override
+    public void onDetach() {
+        LOGD(DEBUG_TAG, "onDetach()");
+        super.onDetach();
+    }
+
+    public void setCallback(OnBookSelectedListener mCallback) {
+        this.mCallback = mCallback;
+    }
+
+    private void initListView() {
+        mBookListAdapter = new BookListAdapter(mParentActivity.getApplication(), mBookListPresenter.getBookList(), mParentActivity.getLayoutInflater());
+        mViewHolder.bookListView.setAdapter(mBookListAdapter);
+        mViewHolder.bookListView.setEmptyView(mViewHolder.listViewEmptyView);
+
+        mBookListAdapter.setItemOnClickListener(new BookListAdapter.ItemOnClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                mCallback.onBookSelected(mBookListPresenter.getBookList().get(position).getId());
+            }
+
+            @Override
+            public void onItemEditClick(TextView textView, int position) {
+                mBookListPresenter.editBook(position);
+            }
+
+            @Override
+            public void onItemDeleteClick(TextView textView, final int position) {
+                new AlertDialog.Builder(mParentActivity)
+                        .setTitle("Confirm")
+                        .setMessage("Do you really delete the book?")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mBookListPresenter.deleteBook(position);
+                            }
+                        }).show();
+            }
+        });
+
+        mViewHolder.bookListView.setOnScrollListener(new InfiniteScrollListener(0) {
+            @Override
+            public void loadMore(int page, int totalItemsCount) {
+                //mBookListPresenter.loadPreviousBooks();
+            }
+        });
+    }
+
+
+    //region BookListPresenter.View
+
+    @Override
+    public void refreshBookList() {
+        mBookListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showOnlyProgressBar() {
+        mViewHolder.progressBar.setVisibility(View.VISIBLE);
+        mViewHolder.swipeRefreshLayout.setVisibility(View.GONE);
+        mViewHolder.listViewEmptyView.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        mViewHolder.progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showListView() {
+        mViewHolder.swipeRefreshLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showToast(String message) {
+        Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void nagivateToEditBookView(Book book) {
+        Toast.makeText(mParentActivity, "Go to edit book activity", Toast.LENGTH_SHORT).show();
+    }
+
+    //endregion
+
+    static class ViewHolder {
+        @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
+        @BindView(R.id.book_listview) ObservableListView bookListView;
+        @BindView(R.id.progressbar) ProgressBar progressBar;
+        @BindView(R.id.listview_empty_view) View listViewEmptyView;
+    }
 }

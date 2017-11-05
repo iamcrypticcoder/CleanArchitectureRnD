@@ -5,31 +5,37 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 
+import com.crypticcoder.cleanarchitecture.MyApplication;
 import com.crypticcoder.cleanarchitecture.R;
 import com.crypticcoder.cleanarchitecture.presentation.ui.fragments.BookDetailFragment;
 import com.crypticcoder.cleanarchitecture.presentation.ui.fragments.BookListFragment;
-import com.crypticcoder.cleanarchitecture.presentation.ui.fragments.BookListFragmentNew;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity /* implements BookListFragmentNew.OnHeadlineSelectedListener */ {
+import static com.crypticcoder.cleanarchitecture.util.LogUtil.makeLogTag;
+
+public class MainActivity extends AppCompatActivity implements BookListFragment.OnBookSelectedListener  {
+    public static final String DEBUG_TAG = makeLogTag(MainActivity.class);
 
     @BindView(R.id.fragment_container) FrameLayout mFrameLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.news_articles);
+        setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        // Creating main activity component
+        MyApplication.getApplication().createMainActivityComponent();
 
         if(null != mFrameLayout) {
             if (savedInstanceState != null) {
                 return;
             }
 
-            BookListFragmentNew firstFragment = new BookListFragmentNew();
-
+            BookListFragment firstFragment = new BookListFragment();
+            firstFragment.setCallback(this);
             firstFragment.setArguments(getIntent().getExtras());
 
             getSupportFragmentManager().beginTransaction()
@@ -37,19 +43,33 @@ public class MainActivity extends AppCompatActivity /* implements BookListFragme
         }
     }
 
-    /*
-    public void onArticleSelected(int position) {
-        // The user selected the headline of an article from the BookListFragment
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        // Releasing main activity component
+        MyApplication.getApplication().releaseMainActivityComponent();
+    }
+
+    public void onBookSelected(Long bookId) {
 
         // Capture the article fragment from the activity layout
-        BookDetailFragment articleFrag = (BookDetailFragment)
-                getSupportFragmentManager().findFragmentById(R.id.article_fragment);
+        BookDetailFragment articleFrag = (BookDetailFragment) getSupportFragmentManager().findFragmentById(R.id.article_fragment);
 
         if (articleFrag != null) {
             // If article frag is available, we're in two-pane layout...
 
             // Call a method in the BookDetailFragment to update its content
-            articleFrag.updateArticleView(position);
+            articleFrag.updateBookDetail(bookId);
 
         } else {
             // If the frag is not available, we're in the one-pane layout and must swap frags...
@@ -57,7 +77,7 @@ public class MainActivity extends AppCompatActivity /* implements BookListFragme
             // Create fragment and give it an argument for the selected article
             BookDetailFragment newFragment = new BookDetailFragment();
             Bundle args = new Bundle();
-            args.putInt(BookDetailFragment.ARG_POSITION, position);
+            args.putLong(BookDetailFragment.ARG_BOOK_ID, bookId);
             newFragment.setArguments(args);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
@@ -70,5 +90,5 @@ public class MainActivity extends AppCompatActivity /* implements BookListFragme
             transaction.commit();
         }
     }
-    */
+
 }

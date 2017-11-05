@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.crypticcoder.cleanarchitecture.presentation.ui.activities.MainActivity"
+    android:background="@color/color11">
+
+    <TextView
+        android:id="@+id/book_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:paddingTop="10dp"
+        android:gravity="top|left"
+        android:text="The Goose with the Golden Eggs. The Goose with the Golden Eggs."
+        android:textColor="@color/color5"
+        android:textSize="18sp"
+        android:fontFamily="sans-serif-light"/>
+
+    <TextView
+        android:id="@+id/book_authors"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/book_title"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="6dp"
+        android:gravity="top|left"
+        android:text="Leo Tolstoy, Jonathan Swift"/>
+
+    <TextView
+        android:id="@+id/published_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/book_authors"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="6dp"
+        android:text="Published Date: "/>
+
+    <TextView
+        android:id="@+id/delete_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/published_date"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:padding="6dp"
+        android:text="DELETE"
+        android:textStyle="bold"
+        android:textColor="@color/rating_star_5"
+        android:textSize="14sp"/>
+
+    <TextView
+        android:id="@+id/edit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/published_date"
+        android:layout_toLeftOf="@id/delete_button"
+        android:layout_marginRight="10dp"
+        android:padding="6dp"
+        android:text="EDIT"
+        android:textColor="@color/deep_blue"
+        android:textStyle="bold"
+        android:textSize="14sp"/>
+
+    <ProgressBar
+        android:id="@+id/progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminateDrawable="@xml/progress_bar_blue"
+        android:visibility="invisible"/>
+
+</RelativeLayout>
