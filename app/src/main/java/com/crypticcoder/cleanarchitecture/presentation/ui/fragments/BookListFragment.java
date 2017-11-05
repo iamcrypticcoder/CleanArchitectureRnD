@@ -1,5 +1,6 @@
 package com.crypticcoder.cleanarchitecture.presentation.ui.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -59,11 +60,6 @@ public class BookListFragment extends Fragment implements BookListPresenter.View
     private ViewHolder mViewHolder;
 
     /**
-     *
-     */
-    private Unbinder mButterKnifeUnbinder;
-
-    /**
      * Book List
      */
     private List<Book> bookList;
@@ -91,6 +87,13 @@ public class BookListFragment extends Fragment implements BookListPresenter.View
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        LOGD(DEBUG_TAG, "onAttach()");
+        super.onAttach(activity);
+        mCallback = (OnBookSelectedListener) activity;
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
@@ -100,6 +103,8 @@ public class BookListFragment extends Fragment implements BookListPresenter.View
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        LOGD(DEBUG_TAG, "onCreateView()");
+
         // Inflate the layout for this fragment
         View mFragmentView = inflater.inflate(R.layout.fragment_book_list, container, false);
 
@@ -107,19 +112,18 @@ public class BookListFragment extends Fragment implements BookListPresenter.View
         mParentActivity = getActivity();
 
         // Init ViewHolder
-        mViewHolder = new ViewHolder();
-        mButterKnifeUnbinder = ButterKnife.bind(mViewHolder, mFragmentView);
+        mViewHolder = new ViewHolder(this, mFragmentView);
 
         initListView();
 
         mBookListPresenter.takeView(this);
-
 
         return mFragmentView;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        LOGD(DEBUG_TAG, "onActivityCreated()");
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -127,14 +131,7 @@ public class BookListFragment extends Fragment implements BookListPresenter.View
     public void onStart() {
         LOGD(DEBUG_TAG, "onStart()");
         super.onStart();
-        mBookListPresenter.loadRecentBooks();
-        /*
-        Book book = new Book();
-        book.setId(1L);
-        book.setTitle("XXX");
-        mBookListPresenter.getBookList().add(book);
-        mBookListAdapter.notifyDataSetChanged();
-        */
+        mBookListPresenter.onStart();
     }
 
     @Override
@@ -168,7 +165,6 @@ public class BookListFragment extends Fragment implements BookListPresenter.View
     public void onDestroy() {
         LOGD(DEBUG_TAG, "onDestroy()");
         super.onDestroy();
-        mButterKnifeUnbinder.unbind();
         mBookListPresenter.dropView();
     }
 
@@ -263,5 +259,18 @@ public class BookListFragment extends Fragment implements BookListPresenter.View
         @BindView(R.id.book_listview) ObservableListView bookListView;
         @BindView(R.id.progressbar) ProgressBar progressBar;
         @BindView(R.id.listview_empty_view) View listViewEmptyView;
+
+        BookListFragment mFragment;
+
+        private Unbinder mButterKnifeUnbinder;
+
+        public ViewHolder(BookListFragment fragment, View view) {
+            mFragment = fragment;
+            mButterKnifeUnbinder = ButterKnife.bind(this, view);
+        }
+
+        public void unbind() {
+            mButterKnifeUnbinder.unbind();
+        }
     }
 }

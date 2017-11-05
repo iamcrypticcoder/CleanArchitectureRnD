@@ -55,27 +55,47 @@ public class BookListPresenterImpl extends AbstractPresenter implements BookList
 
     @Override
     public void onCreateView() {
-
+        LOGD(DEBUG_TAG, "onCreateView()");
     }
 
     @Override
     public void onStart() {
+        LOGD(DEBUG_TAG, "onStart()");
 
+        mView.showOnlyProgressBar();
+        mGetBookListInteractor.setBookListFilter(mBookListFilter);
+        mGetBookListInteractor.setCallback(new GetBookListInteractor.Callback() {
+            @Override
+            public void onSuccess(List<Book> bookList) {
+                mBookList.clear();
+                mBookList.addAll(bookList);
+                mView.hideProgressBar();
+                mView.showListView();
+                mView.refreshBookList();
+            }
+
+            @Override
+            public void onFailed() {
+                mView.showListView();
+                mView.showToast("Unable to fetch");
+            }
+        });
+        mGetBookListInteractor.execute();
     }
 
     @Override
     public void onResume() {
-
+        LOGD(DEBUG_TAG, "onResume()");
     }
 
     @Override
     public void onPause() {
-
+        LOGD(DEBUG_TAG, "onPause()");
     }
 
     @Override
     public void onStop() {
-
+        LOGD(DEBUG_TAG, "onStop()");
     }
 
     @Override
@@ -92,20 +112,16 @@ public class BookListPresenterImpl extends AbstractPresenter implements BookList
     public void loadRecentBooks() {
         LOGD(DEBUG_TAG, "loadRecentBooks()");
 
-        mView.showOnlyProgressBar();
         mGetBookListInteractor.setBookListFilter(mBookListFilter);
         mGetBookListInteractor.setCallback(new GetBookListInteractor.Callback() {
             @Override
             public void onSuccess(List<Book> bookList) {
                 mBookList.addAll(0, bookList);
-                mView.hideProgressBar();
-                mView.showListView();
                 mView.refreshBookList();
             }
 
             @Override
             public void onFailed() {
-                mView.showListView();
                 mView.showToast("Unable to fetch");
             }
         });
@@ -114,7 +130,22 @@ public class BookListPresenterImpl extends AbstractPresenter implements BookList
 
     @Override
     public void loadPreviousBooks() {
-        mView.refreshBookList();
+        LOGD(DEBUG_TAG, "loadPreviousBooks()");
+
+        mGetBookListInteractor.setBookListFilter(mBookListFilter);
+        mGetBookListInteractor.setCallback(new GetBookListInteractor.Callback() {
+            @Override
+            public void onSuccess(List<Book> bookList) {
+                mBookList.addAll(bookList);
+                mView.refreshBookList();
+            }
+
+            @Override
+            public void onFailed() {
+                mView.showToast("Unable to fetch");
+            }
+        });
+        mGetBookListInteractor.execute();
     }
 
     @Override

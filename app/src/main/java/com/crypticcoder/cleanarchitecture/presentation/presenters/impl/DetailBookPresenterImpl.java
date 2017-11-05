@@ -12,17 +12,22 @@ import com.crypticcoder.cleanarchitecture.presentation.presenters.base.AbstractP
 
 import javax.inject.Inject;
 
+import static com.crypticcoder.cleanarchitecture.util.LogUtil.LOGD;
+import static com.crypticcoder.cleanarchitecture.util.LogUtil.makeLogTag;
+
 /**
  * Created by Cryptic Coder on 30,October,2017
  */
 
 public class DetailBookPresenterImpl extends AbstractPresenter implements DetailBookPresenter {
+    public static final String DEBUG_TAG = makeLogTag(DetailBookPresenterImpl.class);
+
     private DetailBookPresenter.View mView;
 
     private ViewBookInteractor mViewBookInteractor;
     private RemoveBookInteractor mRemoveBookInteractor;
 
-    private Long mBookId;
+    private Long mBookId = -1L;
     private Book mBook;
 
     @Inject
@@ -37,11 +42,15 @@ public class DetailBookPresenterImpl extends AbstractPresenter implements Detail
 
     @Override
     public void onCreateView() {
-
+        LOGD(DEBUG_TAG, "onCreateView()");
     }
 
     @Override
     public void onStart() {
+        LOGD(DEBUG_TAG, "onStart()");
+
+        if(mBookId == -1L) return;
+
         mView.showOnlyProgressBar();
         mViewBookInteractor.setBookId(mBookId);
         mViewBookInteractor.setCallback(new ViewBookInteractor.Callback() {
@@ -63,17 +72,17 @@ public class DetailBookPresenterImpl extends AbstractPresenter implements Detail
 
     @Override
     public void onResume() {
-
+        LOGD(DEBUG_TAG, "onResume()");
     }
 
     @Override
     public void onPause() {
-
+        LOGD(DEBUG_TAG, "onPause()");
     }
 
     @Override
     public void onStop() {
-
+        LOGD(DEBUG_TAG, "onStop()");
     }
 
     @Override
@@ -83,10 +92,16 @@ public class DetailBookPresenterImpl extends AbstractPresenter implements Detail
 
     @Override
     public void loadBookDetail() {
+        LOGD(DEBUG_TAG, "loadBookDetail()");
+
+        if(mBookId == -1L) return;
+
+        mView.showOnlyProgressBar();
         mViewBookInteractor.setBookId(mBookId);
         mViewBookInteractor.setCallback(new ViewBookInteractor.Callback() {
             @Override
             public void onSuccess(Book book) {
+                mView.hideProgressBar();
                 mView.populateBook(book);
             }
 

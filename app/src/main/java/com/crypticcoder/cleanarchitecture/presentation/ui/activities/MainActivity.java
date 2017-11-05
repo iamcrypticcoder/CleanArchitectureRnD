@@ -13,6 +13,7 @@ import com.crypticcoder.cleanarchitecture.presentation.ui.fragments.BookListFrag
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.crypticcoder.cleanarchitecture.util.LogUtil.LOGD;
 import static com.crypticcoder.cleanarchitecture.util.LogUtil.makeLogTag;
 
 public class MainActivity extends AppCompatActivity implements BookListFragment.OnBookSelectedListener  {
@@ -22,6 +23,8 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        LOGD(DEBUG_TAG, "onCreate()");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
@@ -45,11 +48,13 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     @Override
     protected void onStart() {
+        LOGD(DEBUG_TAG, "onStart()");
         super.onStart();
     }
 
     @Override
     protected void onStop() {
+        LOGD(DEBUG_TAG, "onStop()");
         super.onStop();
     }
 

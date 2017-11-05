@@ -16,6 +16,7 @@
 package com.crypticcoder.cleanarchitecture.presentation.ui.fragments;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -32,9 +33,12 @@ import com.crypticcoder.cleanarchitecture.R;
 import com.crypticcoder.cleanarchitecture.domain.model.Book;
 import com.crypticcoder.cleanarchitecture.presentation.presenters.DetailBookPresenter;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
@@ -87,6 +91,8 @@ public class BookDetailFragment extends Fragment implements DetailBookPresenter.
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        LOGD(DEBUG_TAG, "onCreateView()");
+
         View mFragmentView = inflater.inflate(R.layout.fragment_book_detail, container, false);
 
         mContext = getActivity();
@@ -110,26 +116,23 @@ public class BookDetailFragment extends Fragment implements DetailBookPresenter.
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        LOGD(DEBUG_TAG, "onActivityCreated()");
+
         super.onActivityCreated(savedInstanceState);
     }
 
     @Override
     public void onStart() {
+        LOGD(DEBUG_TAG, "onStart()");
         super.onStart();
 
-        // During startup, check if there are arguments passed to the fragment.
-        // onStart is a good place to do this because the layout has already been
-        // applied to the fragment at this point so we can safely call the method
-        // below that sets the article text.
         Bundle args = getArguments();
         if (args != null) {
             mBookId = args.getLong(ARG_BOOK_ID);
-            // Set article based on argument passed in
-            updateBookDetail(mBookId);
-        } else if (mBookId != -1) {
-            // Set article based on saved instance state defined during onCreateView
-            updateBookDetail(mBookId);
+            mDetailBookPresenter.setBook(mBookId);
         }
+
+        mDetailBookPresenter.onStart();
     }
 
     @Override
@@ -180,6 +183,7 @@ public class BookDetailFragment extends Fragment implements DetailBookPresenter.
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        LOGD(DEBUG_TAG, "onSaveInstanceState()");
         super.onSaveInstanceState(outState);
 
         // Save the current article selection in case we need to recreate the fragment
@@ -198,21 +202,16 @@ public class BookDetailFragment extends Fragment implements DetailBookPresenter.
 
     @Override
     public void populateBook(Book book) {
-        mViewHolder.bookTitle.setVisibility(View.VISIBLE);
-        mViewHolder.bookAuthors.setVisibility(View.VISIBLE);
-        mViewHolder.publishedDate.setVisibility(View.VISIBLE);
+        ButterKnife.apply(mViewHolder.bookDetailViews, ViewHolder.VISIBILITY, View.VISIBLE);
 
         mViewHolder.bookTitle.setText(book.getTitle());
         mViewHolder.bookAuthors.setText(book.getAuthors().toString());
-        //mViewHolder.publishedDate.setText(book.getPublishedDate().toString());
     }
 
     @Override
     public void showOnlyProgressBar() {
+        ButterKnife.apply(mViewHolder.bookDetailViews, ViewHolder.VISIBILITY, View.INVISIBLE);
         mViewHolder.progressBar.setVisibility(View.VISIBLE);
-        mViewHolder.bookTitle.setVisibility(View.INVISIBLE);
-        mViewHolder.bookAuthors.setVisibility(View.INVISIBLE);
-        mViewHolder.publishedDate.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -232,13 +231,16 @@ public class BookDetailFragment extends Fragment implements DetailBookPresenter.
 
     // endregion
 
-    class ViewHolder {
+    static class ViewHolder {
         @BindView(R.id.book_title) TextView bookTitle;
         @BindView(R.id.book_authors) TextView bookAuthors;
         @BindView(R.id.published_date) TextView publishedDate;
         @BindView(R.id.edit_button) TextView editButton;
         @BindView(R.id.delete_button) TextView deleteButton;
         @BindView(R.id.progressbar) ProgressBar progressBar;
+
+        @BindViews({ R.id.book_title, R.id.book_authors, R.id.published_date, R.id.edit_button, R.id.delete_button })
+        List<View> bookDetailViews;
 
         private Unbinder mButterKnifeUnbinder;
 
@@ -262,5 +264,13 @@ public class BookDetailFragment extends Fragment implements DetailBookPresenter.
         public void onDeleteButtonClicked(TextView v) {
             mFragment.onDeleteButtonClicked(v);
         }
+
+        final static ButterKnife.Setter<View, Integer> VISIBILITY = new
+                ButterKnife.Setter<View,Integer>() {
+                    @Override
+                    public void set(@NonNull View view, Integer value, int index) {
+                        view.setVisibility(value);
+                    }
+                };
     }
 }

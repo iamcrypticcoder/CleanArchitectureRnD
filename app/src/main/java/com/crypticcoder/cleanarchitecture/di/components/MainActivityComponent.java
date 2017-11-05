@@ -18,6 +18,4 @@ public interface MainActivityComponent {
     void inject(MainActivity activity);
     void inject(BookDetailFragment fragment);
     void inject(BookListFragment fragment);
-
-    void inject(BookListFragment fragment);
 }
